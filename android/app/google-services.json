@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "10744364462",
+    "project_id": "spyfall-e9282",
+    "storage_bucket": "spyfall-e9282.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10744364462:android:24e85a40092f9b1dd59c3f",
+        "android_client_info": {
+          "package_name": "com.example.spyfall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "10744364462-0anq0pkehopl9khju0k5o2vl3t7h4ei5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb9Rtz7UYIUkCqEK8UfhpXI-XAomgiFJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "10744364462-0anq0pkehopl9khju0k5o2vl3t7h4ei5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
