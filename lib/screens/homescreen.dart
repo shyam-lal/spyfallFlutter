@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/join_alert.dart';
 import 'package:spyfall/models/room_model.dart';
+import 'package:spyfall/providers/locations_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
 
 class HomeScreen extends StatelessWidget {

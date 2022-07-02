@@ -1,33 +1,36 @@
+import 'dart:math';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
+import 'package:spyfall/models/room_model.dart';
+import 'package:spyfall/providers/locations_provider.dart';
 import 'package:spyfall/screens/game_screen.dart';
 
-class LobbyScreen extends StatefulWidget {
+class LobbyScreen extends StatelessWidget {
+  // const MyWidget({Key? key}) : super(key: key);
   final String roomId;
   final bool isAdmin;
+  List<String> locations = [];
+  var roomDetails;
   LobbyScreen(this.roomId, this.isAdmin);
 
   @override
-  State<LobbyScreen> createState() => _LobbyScreenState();
-}
-
-class _LobbyScreenState extends State<LobbyScreen> {
-  List<String> players = [];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    // getNotifications();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (!widget.isAdmin) {
+    print('---------------LobbyScreen--------------');
+    if (isAdmin) {
       listenForStarting(context);
     }
+    locations = context
+        .watch<LocationProvider>()
+        .locations
+        .map((e) => e.toString())
+        .toList();
+    if (locations.isEmpty) {
+      context.read<LocationProvider>().getLocations();
+    }
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -35,13 +38,12 @@ class _LobbyScreenState extends State<LobbyScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(widget.roomId),
-
+              Text(roomId),
               StreamBuilder(
                   stream: FirebaseDatabase.instance
                       .ref()
                       .child('rooms')
-                      .child(widget.roomId)
+                      .child(roomId)
                       .child('players')
                       .onValue
                       .asBroadcastStream(),
@@ -67,37 +69,47 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       return CircularProgressIndicator();
                     }
                   }),
-
-              // ListView.separated(
-              //   shrinkWrap: true,
-              //   // physics: ClampingScrollPhysics(),
-              //   separatorBuilder: (BuildContext context, int index) {
-              //     return SizedBox(height: 20);
-              //   },
-              //   itemCount: players.length,
-              //   itemBuilder: (BuildContext context, int index) {
-              //     return Text(players[index]);
-              //   },
-              // ),
-
-              widget.isAdmin
+              isAdmin
                   ? ElevatedButton(
-                      onPressed: startGame, child: Text('Start Game'))
+                      onPressed: () {
+                        startGame(context);
+                      },
+                      child: Text('Start Game'))
                   : SizedBox()
             ]),
       ),
     );
   }
 
-  void startGame() {
-    final databaseRef = FirebaseDatabase.instance.ref();
+  Future fetchRoomDetails() async {
+    final databaseRef =
+        FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
 
-    databaseRef
-        .child(FirebaseKeys.rooms)
-        .child(widget.roomId)
-        .child('isplaying')
-        .set(true)
-        .whenComplete(() {
+    databaseRef.once().then((DatabaseEvent event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>;
+      roomDetails = RoomModel.fromJson(data);
+      final players = roomDetails.players as Map<dynamic, dynamic>;
+      final randInt = Random().nextInt(players.keys.length);
+      final spyPlayer = players.keys.elementAt(randInt);
+      // databaseRef.child('players').child(players[spyPlayer]).set('spy');
+      databaseRef.child('players').set({spyPlayer: 'spy'});
+      // for (var player in players.keys) {
+      //         databaseRef.child('players').child(player).set()
+      // }
+      // databaseRef.child('players').;
+    });
+  }
+
+  Future startGame(BuildContext context) async {
+    fetchRoomDetails();
+    final databaseRef =
+        FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
+
+    final location = (locations..shuffle()).first;
+
+    await databaseRef.child('location').set(location);
+
+    databaseRef.child('isplaying').set(true).whenComplete(() {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => GameScreen()));
     });
@@ -107,7 +119,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
     final databaseRef = FirebaseDatabase.instance.ref();
     final sub = databaseRef
         .child(FirebaseKeys.rooms)
-        .child(widget.roomId)
+        .child(roomId)
         .child('isplaying')
         .onValue
         .listen((event) {
@@ -116,23 +128,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => GameScreen()));
       }
-    });
-  }
-
-  Future getNotifications() async {
-    final databaseRef =
-        FirebaseDatabase.instance.ref(); //database reference object
-
-    databaseRef
-        .child(FirebaseKeys.rooms)
-        .child(widget.roomId)
-        .child('players')
-        .onValue
-        .listen((event) {
-      final data = event.snapshot.value as List<String>;
-      setState(() {
-        players = data;
-      });
     });
   }
 }
