@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:spyfall/constants/strings.dart';
 
 class LocationProvider with ChangeNotifier {
-  List<dynamic> _locations = [];
+  Map<dynamic, dynamic> _locations = {};
 
-  List<dynamic> get locations => _locations;
+  Map<dynamic, dynamic> get locations => _locations;
 
   // Fetch notifications
   Future getLocations() async {
@@ -18,7 +18,7 @@ class LocationProvider with ChangeNotifier {
         .child(FirebaseKeys.locations)
         .once()
         .then((DatabaseEvent event) {
-      _locations = event.snapshot.value as List<dynamic>;
+      _locations = event.snapshot.value as Map<dynamic, dynamic>;
       notifyListeners();
     });
 

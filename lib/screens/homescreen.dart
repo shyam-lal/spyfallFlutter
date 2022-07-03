@@ -56,17 +56,17 @@ class HomeScreen extends StatelessWidget {
 
   joinRoomTapped() {}
 
-  Future getNotifications() async {
-    final databaseRef =
-        FirebaseDatabase.instance.ref(); //database reference object
-    await databaseRef
-        .child(FirebaseKeys.locations)
-        .once()
-        .then((DatabaseEvent event) {
-      final data = event.snapshot.value as List<dynamic>;
-      return data;
-    });
-  }
+  // Future getNotifications() async {
+  //   final databaseRef =
+  //       FirebaseDatabase.instance.ref(); //database reference object
+  //   await databaseRef
+  //       .child(FirebaseKeys.locations)
+  //       .once()
+  //       .then((DatabaseEvent event) {
+  //     final data = event.snapshot.value as List<dynamic>;
+  //     return data;
+  //   });
+  // }
 
   String generateRandomString(int len) {
     var r = Random();

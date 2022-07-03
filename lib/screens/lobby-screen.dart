@@ -12,21 +12,18 @@ class LobbyScreen extends StatelessWidget {
   // const MyWidget({Key? key}) : super(key: key);
   final String roomId;
   final bool isAdmin;
-  List<String> locations = [];
+  Map<dynamic, dynamic> locations = {};
   var roomDetails;
   LobbyScreen(this.roomId, this.isAdmin);
 
   @override
   Widget build(BuildContext context) {
     print('---------------LobbyScreen--------------');
-    if (isAdmin) {
+    if (!isAdmin) {
       listenForStarting(context);
     }
-    locations = context
-        .watch<LocationProvider>()
-        .locations
-        .map((e) => e.toString())
-        .toList();
+    locations = context.watch<LocationProvider>().locations;
+    // .map((e) => e.toString())
     if (locations.isEmpty) {
       context.read<LocationProvider>().getLocations();
     }
@@ -81,37 +78,55 @@ class LobbyScreen extends StatelessWidget {
     );
   }
 
-  Future fetchRoomDetails() async {
+  Future startGame(BuildContext context) async {
     final databaseRef =
         FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
+
+    final location = (locations.keys.toList()..shuffle()).first;
+
+    await databaseRef.child('location').set(location);
+
+    databaseRef.child('isplaying').set(true);
+    fetchRoomDetails(context, location);
+  }
+
+  Future fetchRoomDetails(BuildContext context, String location) async {
+    final databaseRef =
+        FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
+
+    final roles = locations[location];
 
     databaseRef.once().then((DatabaseEvent event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>;
       roomDetails = RoomModel.fromJson(data);
       final players = roomDetails.players as Map<dynamic, dynamic>;
-      final randInt = Random().nextInt(players.keys.length);
-      final spyPlayer = players.keys.elementAt(randInt);
+      final playersShuffled = players.keys.toList()..shuffle();
+      final randInt = Random().nextInt(playersShuffled.length);
+      final spyPlayer = playersShuffled.elementAt(randInt);
       // databaseRef.child('players').child(players[spyPlayer]).set('spy');
-      databaseRef.child('players').set({spyPlayer: 'spy'});
+
+      final uploadData = {};
+
+      for (var i = 0; i < playersShuffled.length; i++) {
+        uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
+      }
+
+      // for (var i = 0; i < playersShuffled.length; i++) {
+      databaseRef
+          .child('players')
+          // .set({playersShuffled.elementAt(i): roles.elementAt(i)});
+          .set(uploadData);
+      // }
+
+      databaseRef.child('players').child(spyPlayer).set('spy').whenComplete(() {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => GameScreen()));
+      });
+
       // for (var player in players.keys) {
       //         databaseRef.child('players').child(player).set()
       // }
       // databaseRef.child('players').;
-    });
-  }
-
-  Future startGame(BuildContext context) async {
-    fetchRoomDetails();
-    final databaseRef =
-        FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
-
-    final location = (locations..shuffle()).first;
-
-    await databaseRef.child('location').set(location);
-
-    databaseRef.child('isplaying').set(true).whenComplete(() {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => GameScreen()));
     });
   }
 
