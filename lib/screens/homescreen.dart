@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    userName = context.watch<UserProvider>().userName;
+    // userName = context.watch<UserProvider>().userName;
 
     return Scaffold(
       body: Container(
@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
                           context: context,
                           builder: (BuildContext buildContext) {
                             return AlertScreen('Enter Name', 'Create Room',
-                                true, AlertType.name);
+                                true, AlertType.name, '');
                           })
                       : createRoomTapped(context);
                 },
@@ -43,9 +43,9 @@ class HomeScreen extends StatelessWidget {
                       builder: (BuildContext buildContext) {
                         return userName.isEmpty
                             ? AlertScreen(
-                                'Enter Name', 'Join', true, AlertType.name)
-                            : AlertScreen(
-                                'Room ID', 'Join Room', true, AlertType.join);
+                                'Enter Name', 'Join', true, AlertType.name, '')
+                            : AlertScreen('Room ID', 'Join Room', true,
+                                AlertType.join, userName);
                       });
                 },
                 child: Text("JOIN ROOM"))
@@ -58,7 +58,7 @@ class HomeScreen extends StatelessWidget {
   createRoomTapped(BuildContext context) {
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = generateRandomString(5);
-    final roomModel = RoomModel(roomId, 'dummy', {'creator': ''}, false);
+    final roomModel = RoomModel(roomId, 'dummy', {userName: ''}, false);
     roomRef
         .child(roomId)
         // .set({'hello': 'world'}).whenComplete(() {

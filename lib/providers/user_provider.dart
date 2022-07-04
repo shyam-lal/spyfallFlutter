@@ -11,6 +11,7 @@ class UserProvider with ChangeNotifier {
 
   setUserName(String name) {
     _userName = name;
+    notifyListeners();
   }
 
   setAdminStatus(bool admin) {

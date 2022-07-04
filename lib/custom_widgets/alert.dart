@@ -11,15 +11,20 @@ import 'package:spyfall/screens/lobby-screen.dart';
 class AlertScreen extends StatelessWidget {
   // const AlertScreen({Key? key}) : super(key: key);
   var isAdmin;
-  final String hintString, buttonTitle;
+  final String hintString, buttonTitle, name;
   final bool hasLabel;
   final AlertType alertType;
-  AlertScreen(this.hintString, this.buttonTitle, this.hasLabel, this.alertType);
+  AlertScreen(this.hintString, this.buttonTitle, this.hasLabel, this.alertType,
+      this.name);
   TextEditingController roomIdController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    if (!name.isEmpty) {
+      // context.read<UserProvider>().setUserName(name);
+    }
     isAdmin = context.watch<UserProvider>().isAdmin;
+    // userName = context.watch<UserProvider>().userName;
     return AlertDialog(
       backgroundColor: Color.fromARGB(255, 249, 249, 249),
       content: Container(
@@ -58,24 +63,20 @@ class AlertScreen extends StatelessWidget {
                               side: BorderSide(color: Colors.black)))),
                   onPressed: () {
                     print('oombikko myre');
-
                     isAdmin
-                        ? createRoom(context)
+                        ? createRoom(context, roomIdController.text)
                         : (alertType == AlertType.name)
-                            ?
-                            // addNameTapped(context),
-                            showDialog(
+                            ? showDialog(
                                 context: context,
                                 builder: (BuildContext buildContext) {
-                                  context
-                                      .read<UserProvider>()
-                                      .setUserName(roomIdController.text);
+                                  final name = roomIdController.text;
 
                                   // addNameTapped(context);
                                   return AlertScreen('Room ID', 'Join Room',
-                                      true, AlertType.join);
+                                      true, AlertType.join, name);
                                 })
-                            : joinRoomTapped(context);
+                            : joinRoomTapped(context, name);
+
                     // createTransactions(widget.expense, widget.income);
                   },
                   child: Text(
@@ -94,12 +95,12 @@ class AlertScreen extends StatelessWidget {
     // context.read<UserProvider>().setUserName(roomIdController.text);
   }
 
-  joinRoomTapped(BuildContext context) {
+  joinRoomTapped(BuildContext context, String name) {
     print('111111111111111111111join taped111111111111111');
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = roomIdController.text;
     // final roomModel = RoomModel(roomId, 'dummy', {1: 'njan'}, false);
-    roomRef.child(roomId).child('players').child('njn').set('spy')
+    roomRef.child(roomId).child('players').child(name).set('')
         // .set({'hello': 'world'}).whenComplete(() {
         // .set({'nee': 'spy'})
         .whenComplete(() {
@@ -109,10 +110,12 @@ class AlertScreen extends StatelessWidget {
   }
 
 //Create Room
-  createRoom(BuildContext context) {
+  createRoom(BuildContext context, String name) {
+    // context.read<UserProvider>().setUserName(name);
+
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = generateRandomString(5);
-    final roomModel = RoomModel(roomId, 'dummy', {'creator': ''}, false);
+    final roomModel = RoomModel(roomId, 'dummy', {name: ''}, false);
     roomRef
         .child(roomId)
         // .set({'hello': 'world'}).whenComplete(() {
