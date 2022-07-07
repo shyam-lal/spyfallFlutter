@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,7 +28,7 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>spyfall</title>
   <link rel="manifest" href="manifest.json">
@@ -39,20 +40,47 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
 </head>
+
 <body>
+
+  <!-- .Initialise firebase.. -->
+
+
+  <!-- The core Firebase JS SDK (always required for using any Firebase service) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <!-- Firebase Auth SDK -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script> -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js"></script>
   <script>
-    window.addEventListener('load', function(ev) {
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyCacocvKnYrpYLMgAvY2Zxppjf56dmpi9s",
+      authDomain: "spyfall-e9282.firebaseapp.com",
+      databaseURL: "https://spyfall-e9282-default-rtdb.firebaseio.com",
+      projectId: "spyfall-e9282",
+      storageBucket: "spyfall-e9282.appspot.com",
+      messagingSenderId: "10744364462",
+      appId: "1:10744364462:web:25d0dd74f37f72cfd59c3f",
+      measurementId: "G-HT4LEHSW3Q"
+    }
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig)
+  </script>
+  <!-- END OF FIREBASE INIT CODE -->
+  <script>
+    window.addEventListener('load', function (ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         }
-      }).then(function(engineInitializer) {
+      }).then(function (engineInitializer) {
         return engineInitializer.initializeEngine();
-      }).then(function(appRunner) {
+      }).then(function (appRunner) {
         return appRunner.runApp();
       });
     });
   </script>
 </body>
+
 </html>

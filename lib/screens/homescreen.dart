@@ -24,6 +24,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             ElevatedButton(
                 onPressed: () {
+                  print("------------------");
                   context.read<UserProvider>().setAdminStatus(true);
                   userName.isEmpty
                       ? showDialog(
@@ -64,8 +65,8 @@ class HomeScreen extends StatelessWidget {
         // .set({'hello': 'world'}).whenComplete(() {
         .set(roomModel.toJson())
         .whenComplete(() {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => LobbyScreen(roomId, true)));
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => LobbyScreen(roomId, true, userName)));
     });
   }
 

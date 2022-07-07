@@ -6,15 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/locations_provider.dart';
+import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/game_screen.dart';
 
 class LobbyScreen extends StatelessWidget {
+  var currentLocation, playerRole;
   // const MyWidget({Key? key}) : super(key: key);
-  final String roomId;
+  final String roomId, userName;
   final bool isAdmin;
   Map<dynamic, dynamic> locations = {};
   var roomDetails;
-  LobbyScreen(this.roomId, this.isAdmin);
+  LobbyScreen(this.roomId, this.isAdmin, this.userName);
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,8 @@ class LobbyScreen extends StatelessWidget {
       listenForStarting(context);
     }
     locations = context.watch<LocationProvider>().locations;
+    // playerName = context.watch<UserProvider>().userName;
+
     // .map((e) => e.toString())
     if (locations.isEmpty) {
       context.read<LocationProvider>().getLocations();
@@ -83,7 +87,7 @@ class LobbyScreen extends StatelessWidget {
         FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
 
     final location = (locations.keys.toList()..shuffle()).first;
-
+    currentLocation = location;
     await databaseRef.child('location').set(location);
 
     databaseRef.child('isplaying').set(true);
@@ -119,8 +123,14 @@ class LobbyScreen extends StatelessWidget {
       // }
 
       databaseRef.child('players').child(spyPlayer).set('spy').whenComplete(() {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => GameScreen()));
+        if (userName == spyPlayer) {
+          playerRole = "spy";
+        } else {
+          playerRole = uploadData[userName];
+        }
+
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => GameScreen(currentLocation, playerRole)));
       });
 
       // for (var player in players.keys) {
@@ -140,8 +150,8 @@ class LobbyScreen extends StatelessWidget {
         .listen((event) {
       final value = event.snapshot.value as bool;
       if (value) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => GameScreen()));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => GameScreen(currentLocation, playerRole)));
       }
     });
   }

@@ -5,8 +5,23 @@ import 'package:spyfall/providers/locations_provider.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/homescreen.dart';
 
-void main() {
+void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  // await Firebase.initializeApp(
+  //   // Replace with actual values
+  //   options: const FirebaseOptions(
+  //       apiKey: "AIzaSyCacocvKnYrpYLMgAvY2Zxppjf56dmpi9s",
+  //       authDomain: "spyfall-e9282.firebaseapp.com",
+  //       databaseURL: "https://spyfall-e9282-default-rtdb.firebaseio.com",
+  //       projectId: "spyfall-e9282",
+  //       storageBucket: "spyfall-e9282.appspot.com",
+  //       messagingSenderId: "10744364462",
+  //       appId: "1:10744364462:web:25d0dd74f37f72cfd59c3f",
+  //       measurementId: "G-HT4LEHSW3Q"),
+  // );
 
   runApp(MultiProvider(
     providers: [
@@ -20,7 +35,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Firebase.initializeApp();
+    // Firebase.initializeApp();
 
     return MaterialApp(
       home: HomeScreen(),

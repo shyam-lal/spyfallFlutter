@@ -104,8 +104,8 @@ class AlertScreen extends StatelessWidget {
         // .set({'hello': 'world'}).whenComplete(() {
         // .set({'nee': 'spy'})
         .whenComplete(() {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => LobbyScreen(roomId, false)));
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => LobbyScreen(roomId, false, name)));
     });
   }
 
@@ -121,8 +121,8 @@ class AlertScreen extends StatelessWidget {
         // .set({'hello': 'world'}).whenComplete(() {
         .set(roomModel.toJson())
         .whenComplete(() {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => LobbyScreen(roomId, true)));
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => LobbyScreen(roomId, true, name)));
     });
   }
 
