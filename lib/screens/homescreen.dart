@@ -34,6 +34,7 @@ class HomeScreen extends StatelessWidget {
                                 true, AlertType.name, '');
                           })
                       : createRoomTapped(context);
+                  // getNotifications();
                 },
                 child: Text("CREATE ROOM")),
             ElevatedButton(
@@ -72,17 +73,17 @@ class HomeScreen extends StatelessWidget {
 
   joinRoomTapped() {}
 
-  // Future getNotifications() async {
-  //   final databaseRef =
-  //       FirebaseDatabase.instance.ref(); //database reference object
-  //   await databaseRef
-  //       .child(FirebaseKeys.locations)
-  //       .once()
-  //       .then((DatabaseEvent event) {
-  //     final data = event.snapshot.value as List<dynamic>;
-  //     return data;
-  //   });
-  // }
+  Future getNotifications() async {
+    final databaseRef = FirebaseDatabase.instance
+        .ref(FirebaseKeys.locations); //database reference object
+    await databaseRef
+        // .child(FirebaseKeys.locations)
+        .once()
+        .then((DatabaseEvent event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>;
+      print(data);
+    });
+  }
 
   String generateRandomString(int len) {
     var r = Random();
