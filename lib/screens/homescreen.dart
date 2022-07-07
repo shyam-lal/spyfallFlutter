@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/alert.dart';
+import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
@@ -22,35 +23,32 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  print("------------------");
-                  context.read<UserProvider>().setAdminStatus(true);
-                  userName.isEmpty
-                      ? showDialog(
-                          context: context,
-                          builder: (BuildContext buildContext) {
-                            return AlertScreen('Enter Name', 'Create Room',
-                                true, AlertType.name, '');
-                          })
-                      : createRoomTapped(context);
-                  // getNotifications();
-                },
-                child: Text("CREATE ROOM")),
-            ElevatedButton(
-                onPressed: () {
-                  context.read<UserProvider>().setAdminStatus(false);
-                  showDialog(
+            SFButton("CREATE ROOM", () {
+              context.read<UserProvider>().setAdminStatus(true);
+              userName.isEmpty
+                  ? showDialog(
                       context: context,
                       builder: (BuildContext buildContext) {
-                        return userName.isEmpty
-                            ? AlertScreen(
-                                'Enter Name', 'Join', true, AlertType.name, '')
-                            : AlertScreen('Room ID', 'Join Room', true,
-                                AlertType.join, userName);
-                      });
-                },
-                child: Text("JOIN ROOM"))
+                        return AlertScreen('Enter Name', 'Create Room', true,
+                            AlertType.name, '');
+                      })
+                  : createRoomTapped(context);
+            }),
+            const SizedBox(
+              height: 30.0,
+            ),
+            SFButton("JOIN ROOM", () {
+              context.read<UserProvider>().setAdminStatus(false);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext buildContext) {
+                    return userName.isEmpty
+                        ? AlertScreen(
+                            'Enter Name', 'Join', true, AlertType.name, '')
+                        : AlertScreen('Room ID', 'Join Room', true,
+                            AlertType.join, userName);
+                  });
+            }),
           ],
         ),
       ),
