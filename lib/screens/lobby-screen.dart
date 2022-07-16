@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
@@ -20,6 +21,8 @@ class LobbyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     print('---------------LobbyScreen--------------');
     if (!isAdmin) {
       listenForStarting(context);
@@ -33,46 +36,93 @@ class LobbyScreen extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       body: Container(
         width: double.infinity,
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(roomId),
-              StreamBuilder(
-                  stream: FirebaseDatabase.instance
-                      .ref()
-                      .child('rooms')
-                      .child(roomId)
-                      .child('players')
-                      .onValue
-                      .asBroadcastStream(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.active) {
-                      print('Snapshot: ${snapshot.data.toString()}');
-                      DatabaseEvent event = snapshot.data as DatabaseEvent;
-                      final players =
-                          event.snapshot.value as Map<dynamic, dynamic>;
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          physics: ClampingScrollPhysics(),
-                          itemCount: players.length,
-                          itemBuilder: (context, index) {
-                            return Text(players.keys.elementAt(index));
-                          });
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  }),
+              Container(
+                // color: Colors.white,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  // border: Border.all(color: Colors.black)
+                ),
+                height: screenHeight * 0.12,
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(onPressed: null, icon: Icon(Icons.person)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Invite Code:"),
+                        ElevatedButton(
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: "roomId"));
+                            },
+                            child: Row(
+                              children: [Text(roomId), Icon(Icons.copy)],
+                            ))
+                      ],
+                    ),
+                    IconButton(onPressed: null, icon: Icon(Icons.menu))
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: screenHeight * 0.1,
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                height: screenHeight * 0.6,
+                color: Colors.white,
+                child: StreamBuilder(
+                    stream: FirebaseDatabase.instance
+                        .ref()
+                        .child('rooms')
+                        .child(roomId)
+                        .child('players')
+                        .onValue
+                        .asBroadcastStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.active) {
+                        print('Snapshot: ${snapshot.data.toString()}');
+                        DatabaseEvent event = snapshot.data as DatabaseEvent;
+                        final players =
+                            event.snapshot.value as Map<dynamic, dynamic>;
+                        return ListView.builder(
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            itemCount: players.length,
+                            itemBuilder: (context, index) {
+                              return Center(
+                                  child: Container(
+                                color: Colors.red,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.person),
+                                    Text(players.keys.elementAt(index)),
+                                    IconButton(
+                                        onPressed: null,
+                                        icon: Icon(Icons.close))
+                                  ],
+                                ),
+                              ));
+                            });
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+              ),
+              SizedBox(
+                height: screenHeight * 0.05,
+              ),
               isAdmin
-                  ?
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       startGame(context);
-                  //     },
-                  //     child: Text('Start Game'))
-                  SFButton('Start Game', () {
+                  ? SFButton('Start Game', () {
                       startGame(context);
                     })
                   : SizedBox()
@@ -131,11 +181,6 @@ class LobbyScreen extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => GameScreen(currentLocation, playerRole)));
       });
-
-      // for (var player in players.keys) {
-      //         databaseRef.child('players').child(player).set()
-      // }
-      // databaseRef.child('players').;
     });
   }
 
