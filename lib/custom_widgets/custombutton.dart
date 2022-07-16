@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 class SFButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  SFButton(this.text, this.onPressed);
+  final double height, width;
+  SFButton(this.text, this.height, this.width, this.onPressed);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.5,
+      height: height,
+      width: width,
+      // width: MediaQuery.of(context).size.width * 0.5,
       child: Center(
         child: MaterialButton(
           onPressed: onPressed,

@@ -1,26 +1,66 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:spyfall/custom_widgets/countdown_timer.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 
-class GameScreen extends StatelessWidget {
-  // Animation<int> animation;
+class GameScreen extends StatefulWidget {
   final String location, role;
   GameScreen(this.location, this.role);
+  bool gameIsActive = true;
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
         width: double.infinity,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(location),
-            Text('Your role is $role'),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       leaveRoom(context);
-            //     },
-            //     child: const Text('Leave Room'))
-            SFButton('Start Game', () {
+            Container(
+              // color: Colors.white,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                // border: Border.all(color: Colors.black)
+              ),
+              height: screenHeight * 0.12,
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(onPressed: null, icon: Icon(Icons.person)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text("Invite Code:"),
+                    ],
+                  ),
+                  IconButton(onPressed: null, icon: Icon(Icons.menu))
+                ],
+              ),
+            ),
+            Container(
+              width: screenWidth * 0.2,
+              height: screenHeight * 0.05,
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 72, 70, 70),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: CountDownTimer(
+                  secondsRemaining: 90,
+                  whenTimeExpires: () {
+                    widget.gameIsActive = false;
+                    print("========Expirewd========");
+                  }),
+            ),
+            Text(widget.location),
+            Text('Your role is ${widget.role}'),
+            SFButton('Leave Room', screenHeight * 0.05, screenWidth * .3, () {
               leaveRoom(context);
             })
           ],
@@ -33,60 +73,3 @@ class GameScreen extends StatelessWidget {
     Navigator.pop(context);
   }
 }
-
-// import 'dart:async';
-
-// import 'package:flutter/src/widgets/framework.dart';
-
-// import 'package:flutter/src/foundation/key.dart';
-
-// Timer _timer;
-// int _start = 10;
-
-// class MyWidget extends StatelessWidget {
-//   const MyWidget({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     void startTimer() {
-//       const oneSec = const Duration(seconds: 1);
-//       _timer = new Timer.periodic(
-//         oneSec,
-//         (Timer timer) {
-//           if (_start == 0) {
-//             setState(() {
-//               timer.cancel();
-//             });
-//           } else {
-//             setState(() {
-//               _start--;
-//             });
-//           }
-//         },
-//       );
-//     }
-
-//     @override
-//     void dispose() {
-//       _timer.cancel();
-//       super.dispose();
-//     }
-
-//     Widget build(BuildContext context) {
-//       return new Scaffold(
-//         appBar: AppBar(title: Text("Timer test")),
-//         body: Column(
-//           children: <Widget>[
-//             RaisedButton(
-//               onPressed: () {
-//                 startTimer();
-//               },
-//               child: Text("start"),
-//             ),
-//             Text("$_start")
-//           ],
-//         ),
-//       );
-//     }
-//   }
-// }

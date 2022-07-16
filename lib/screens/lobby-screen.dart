@@ -122,7 +122,8 @@ class LobbyScreen extends StatelessWidget {
                 height: screenHeight * 0.05,
               ),
               isAdmin
-                  ? SFButton('Start Game', () {
+                  ? SFButton(
+                      'Start Game', screenHeight * 0.08, screenWidth * .5, () {
                       startGame(context);
                     })
                   : SizedBox()

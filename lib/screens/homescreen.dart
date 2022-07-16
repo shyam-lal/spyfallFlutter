@@ -17,6 +17,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // userName = context.watch<UserProvider>().userName;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Container(
@@ -31,7 +33,7 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               height: 30,
             ),
-            SFButton("CREATE ROOM", () {
+            SFButton("CREATE ROOM", screenHeight * 0.08, screenWidth * .5, () {
               context.read<UserProvider>().setAdminStatus(true);
               userName.isEmpty
                   ? showDialog(
@@ -45,7 +47,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(
               height: 30.0,
             ),
-            SFButton("JOIN ROOM", () {
+            SFButton("JOIN ROOM", screenHeight * 0.08, screenWidth * .5, () {
               context.read<UserProvider>().setAdminStatus(false);
               showDialog(
                   context: context,
