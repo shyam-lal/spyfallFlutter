@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
+import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
@@ -51,38 +52,56 @@ class AlertScreen extends StatelessWidget {
             //Button
             Padding(
               padding: EdgeInsets.only(top: 30),
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black),
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.black)))),
-                  onPressed: () {
-                    print('oombikko myre');
-                    isAdmin
-                        ? createRoom(context, roomIdController.text)
-                        : (alertType == AlertType.name)
-                            ? showDialog(
-                                context: context,
-                                builder: (BuildContext buildContext) {
-                                  final name = roomIdController.text;
+              child:
+                  //  SFButton(buttonTitle, () {
+                  //   isAdmin
+                  //       ? createRoom(context, roomIdController.text)
+                  //       : (alertType == AlertType.name)
+                  //           ? showDialog(
+                  //               context: context,
+                  //               builder: (BuildContext buildContext) {
+                  //                 final name = roomIdController.text;
 
-                                  // addNameTapped(context);
-                                  return AlertScreen('Room ID', 'Join Room',
-                                      true, AlertType.join, name);
-                                })
-                            : joinRoomTapped(context, name);
+                  //                 // addNameTapped(context);
+                  //                 return AlertScreen('Room ID', 'Join Room', true,
+                  //                     AlertType.join, name);
+                  //               })
+                  //           : joinRoomTapped(context, name);
+                  // })
 
-                    // createTransactions(widget.expense, widget.income);
-                  },
-                  child: Text(
-                    buttonTitle,
-                    style: TextStyle(color: Colors.white),
-                  )),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Colors.black)))),
+                      onPressed: () {
+                        print('oombikko myre');
+                        isAdmin
+                            ? createRoom(context, roomIdController.text)
+                            : (alertType == AlertType.name)
+                                ? showDialog(
+                                    context: context,
+                                    builder: (BuildContext buildContext) {
+                                      final name = roomIdController.text;
+
+                                      // addNameTapped(context);
+                                      return AlertScreen('Room ID', 'Join Room',
+                                          true, AlertType.join, name);
+                                    })
+                                : joinRoomTapped(context, name);
+
+                        // createTransactions(widget.expense, widget.income);
+                      },
+                      child: Text(
+                        buttonTitle,
+                        style: TextStyle(color: Colors.white),
+                      )),
             )
           ],
         ),

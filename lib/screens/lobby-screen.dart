@@ -4,9 +4,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
+import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/locations_provider.dart';
-import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/game_screen.dart';
 
 class LobbyScreen extends StatelessWidget {
@@ -48,13 +48,8 @@ class LobbyScreen extends StatelessWidget {
                       .child('players')
                       .onValue
                       .asBroadcastStream(),
-                  // .asStream(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.active) {
-                      // var databaseEvent = snapshot
-                      //     .value; // 👈 Get the DatabaseEvent from the AsyncSnapshot
-                      // var databaseSnapshot = databaseEvent
-                      //     .snapshot; // 👈 Get the DataSnapshot from the DatabaseEvent
                       print('Snapshot: ${snapshot.data.toString()}');
                       DatabaseEvent event = snapshot.data as DatabaseEvent;
                       final players =
@@ -71,11 +66,15 @@ class LobbyScreen extends StatelessWidget {
                     }
                   }),
               isAdmin
-                  ? ElevatedButton(
-                      onPressed: () {
-                        startGame(context);
-                      },
-                      child: Text('Start Game'))
+                  ?
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       startGame(context);
+                  //     },
+                  //     child: Text('Start Game'))
+                  SFButton('Start Game', () {
+                      startGame(context);
+                    })
                   : SizedBox()
             ]),
       ),

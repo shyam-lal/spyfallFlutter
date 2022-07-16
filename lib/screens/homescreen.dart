@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/alert.dart';
@@ -23,6 +24,13 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text(
+              "SPYFALL",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+            ),
+            SizedBox(
+              height: 30,
+            ),
             SFButton("CREATE ROOM", () {
               context.read<UserProvider>().setAdminStatus(true);
               userName.isEmpty

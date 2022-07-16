@@ -33,6 +33,8 @@ dependencies:
   firebase_core: ^1.19.1
   firebase_database: ^9.0.18
   provider: ^6.0.3
+  google_fonts: ^3.0.1
+
 
 
 
