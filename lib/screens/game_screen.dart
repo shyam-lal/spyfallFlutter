@@ -1,6 +1,6 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spyfall/custom_widgets/alert.dart';
 import 'package:spyfall/custom_widgets/countdown_timer.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/sf_images.dart';
@@ -33,65 +33,69 @@ class _GameScreenState extends State<GameScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              // color: Colors.white,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                // border: Border.all(color: Colors.black)
+        child: SingleChildScrollView(
+          physics: ScrollPhysics(),
+          child: Column(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                height: screenHeight * 0.12,
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const IconButton(onPressed: null, icon: Icon(Icons.person)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        // Text("Invite Code:"),
+                      ],
+                    ),
+                    const IconButton(onPressed: null, icon: Icon(Icons.menu))
+                  ],
+                ),
               ),
-              height: screenHeight * 0.12,
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(onPressed: null, icon: Icon(Icons.person)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text("Invite Code:"),
-                    ],
-                  ),
-                  IconButton(onPressed: null, icon: Icon(Icons.menu))
-                ],
+              SFSpace(0.05, 0),
+              Container(
+                width: screenWidth * 0.2,
+                height: screenHeight * 0.05,
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 72, 70, 70),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: CountDownTimer(
+                    secondsRemaining: 10,
+                    whenTimeExpires: () {
+                      widget.gameIsActive = false;
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext buildContext) {
+                            return AlertMessage();
+                          });
+                    }),
               ),
-            ),
-            SFSpace(0.02, 0),
-            Container(
-              width: screenWidth * 0.2,
-              height: screenHeight * 0.05,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 72, 70, 70),
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+              SFSpace(0.02, 0),
+              Text("The location is ${widget.location}"),
+              SFSpace(0.02, 0),
+              Text('Your are the ${widget.role}'),
+              SFSpace(0.02, 0),
+              SFButton('Leave Room', screenHeight * 0.05, screenWidth * .3, () {
+                leaveRoom(context);
+              }),
+              SFSpace(0.05, 0),
+              const Text(
+                "Locations: ",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              child: CountDownTimer(
-                  secondsRemaining: 90,
-                  whenTimeExpires: () {
-                    widget.gameIsActive = false;
-                    print("========Expirewd========");
-                  }),
-            ),
-            SFSpace(0.02, 0),
-            Text("The location is ${widget.location}"),
-            SFSpace(0.02, 0),
-            Text('Your are the ${widget.role}'),
-            SFSpace(0.02, 0),
-            SFButton('Leave Room', screenHeight * 0.05, screenWidth * .3, () {
-              leaveRoom(context);
-            }),
-            SFSpace(0.05, 0),
-            const Text(
-              "Locations: ",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const Text(
-              "Tap to mark off locations",
-              style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
-            ),
-            Expanded(
-              child: ListView.separated(
+              const Text(
+                "Tap to mark off locations",
+                style:
+                    TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+              ),
+              ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: 3,
                   itemBuilder: (BuildContext context, int index) {
@@ -161,8 +165,8 @@ class _GameScreenState extends State<GameScreen> {
                   separatorBuilder: (BuildContext context, int index) {
                     return SizedBox(height: 20);
                   }),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

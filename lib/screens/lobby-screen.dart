@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
@@ -12,7 +12,6 @@ import 'package:spyfall/screens/game_screen.dart';
 
 class LobbyScreen extends StatelessWidget {
   var currentLocation, playerRole;
-  // const MyWidget({Key? key}) : super(key: key);
   final String roomId, userName;
   final bool isAdmin;
   Map<dynamic, dynamic> locations = {};
@@ -45,7 +44,7 @@ class LobbyScreen extends StatelessWidget {
             children: [
               Container(
                 // color: Colors.white,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   // border: Border.all(color: Colors.black)
                 ),
@@ -61,10 +60,13 @@ class LobbyScreen extends StatelessWidget {
                         Text("Invite Code:"),
                         ElevatedButton(
                             onPressed: () {
-                              Clipboard.setData(ClipboardData(text: "roomId"));
+                              // Clipboard.setData(ClipboardData(text: "roomId"));
+                              // Share.share('check out my website https://example.com');
+                              // FlutterShare.share(title: 'title');
+                              share();
                             },
                             child: Row(
-                              children: [Text(roomId), Icon(Icons.copy)],
+                              children: [Text(roomId), Icon(Icons.share)],
                             ))
                       ],
                     ),
@@ -199,5 +201,16 @@ class LobbyScreen extends StatelessWidget {
             builder: (context) => GameScreen(currentLocation, playerRole)));
       }
     });
+  }
+
+  ////////
+  ////////
+  /////////Share code
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'Example share',
+        text: 'Example share text',
+        linkUrl: 'https://flutter.dev/',
+        chooserTitle: 'Example Chooser Title');
   }
 }

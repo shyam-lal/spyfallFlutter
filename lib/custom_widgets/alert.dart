@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
+import 'package:spyfall/custom_widgets/sf_widgets.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
@@ -52,56 +53,38 @@ class AlertScreen extends StatelessWidget {
             //Button
             Padding(
               padding: EdgeInsets.only(top: 30),
-              child:
-                  //  SFButton(buttonTitle, () {
-                  //   isAdmin
-                  //       ? createRoom(context, roomIdController.text)
-                  //       : (alertType == AlertType.name)
-                  //           ? showDialog(
-                  //               context: context,
-                  //               builder: (BuildContext buildContext) {
-                  //                 final name = roomIdController.text;
+              child: ElevatedButton(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.black)))),
+                  onPressed: () {
+                    print('oombikko myre');
+                    isAdmin
+                        ? createRoom(context, roomIdController.text)
+                        : (alertType == AlertType.name)
+                            ? showDialog(
+                                context: context,
+                                builder: (BuildContext buildContext) {
+                                  final name = roomIdController.text;
 
-                  //                 // addNameTapped(context);
-                  //                 return AlertScreen('Room ID', 'Join Room', true,
-                  //                     AlertType.join, name);
-                  //               })
-                  //           : joinRoomTapped(context, name);
-                  // })
+                                  // addNameTapped(context);
+                                  return AlertScreen('Room ID', 'Join Room',
+                                      true, AlertType.join, name);
+                                })
+                            : joinRoomTapped(context, name);
 
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                      side: BorderSide(color: Colors.black)))),
-                      onPressed: () {
-                        print('oombikko myre');
-                        isAdmin
-                            ? createRoom(context, roomIdController.text)
-                            : (alertType == AlertType.name)
-                                ? showDialog(
-                                    context: context,
-                                    builder: (BuildContext buildContext) {
-                                      final name = roomIdController.text;
-
-                                      // addNameTapped(context);
-                                      return AlertScreen('Room ID', 'Join Room',
-                                          true, AlertType.join, name);
-                                    })
-                                : joinRoomTapped(context, name);
-
-                        // createTransactions(widget.expense, widget.income);
-                      },
-                      child: Text(
-                        buttonTitle,
-                        style: TextStyle(color: Colors.white),
-                      )),
+                    // createTransactions(widget.expense, widget.income);
+                  },
+                  child: Text(
+                    buttonTitle,
+                    style: TextStyle(color: Colors.white),
+                  )),
             )
           ],
         ),
@@ -151,5 +134,38 @@ class AlertScreen extends StatelessWidget {
     return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
         .join()
         .toString();
+  }
+}
+
+//////////////
+/////////////EndGame Alert
+///
+
+class AlertMessage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    return AlertDialog(
+        backgroundColor: Color.fromARGB(255, 249, 249, 249),
+        content: Container(
+          width: screenWidth * 0.6,
+          height: screenHeight * 0.25,
+          child: Column(
+            children: [
+              const Text(
+                "Time's Up",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+              SFSpace(0.025, 0),
+              Image.asset(
+                "assets/images/timer.png",
+                width: screenWidth * 0.15,
+              ),
+              SFSpace(0.025, 0),
+              const Text("Guess the spy in your midst")
+            ],
+          ),
+        ));
   }
 }
