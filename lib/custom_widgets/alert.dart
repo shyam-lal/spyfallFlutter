@@ -117,7 +117,7 @@ class AlertScreen extends StatelessWidget {
 
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = generateRandomString(5);
-    final roomModel = RoomModel(roomId, 'dummy', {name: ''}, false);
+    final roomModel = RoomModel(roomId, 'dummy', {name: ''}, false, 8);
     roomRef
         .child(roomId)
         // .set({'hello': 'world'}).whenComplete(() {

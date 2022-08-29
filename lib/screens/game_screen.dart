@@ -5,11 +5,13 @@ import 'package:spyfall/custom_widgets/countdown_timer.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/sf_images.dart';
 import 'package:spyfall/custom_widgets/sf_widgets.dart';
+import 'package:spyfall/providers/locations_provider.dart';
 import 'package:spyfall/providers/user_provider.dart';
 
 class GameScreen extends StatefulWidget {
+  final int countdownTime;
   final String location, role;
-  GameScreen(this.location, this.role);
+  GameScreen(this.location, this.role, this.countdownTime);
   bool gameIsActive = true;
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -66,7 +68,7 @@ class _GameScreenState extends State<GameScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 child: CountDownTimer(
-                    secondsRemaining: 10,
+                    secondsRemaining: (widget.countdownTime * 60),
                     whenTimeExpires: () {
                       widget.gameIsActive = false;
                       showDialog(
@@ -102,63 +104,8 @@ class _GameScreenState extends State<GameScreen> {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            var b = widget.locationImages[widget
-                                .locationImages.keys
-                                .elementAt(index * 2)];
-                            setState(() {
-                              widget.locationImages[widget.locationImages.keys
-                                  .elementAt(index * 2)] = !b!;
-                            });
-                          },
-                          child: Stack(
-                            children: [
-                              LocationImage(widget.locationImages.keys
-                                  .elementAt(index * 2)),
-                              widget.locationImages.values.elementAt(index * 2)
-                                  ? Container(
-                                      decoration: const BoxDecoration(
-                                          color:
-                                              Color.fromARGB(149, 255, 29, 29),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20))),
-                                      height: screenHeight * 0.14,
-                                      width: screenWidth * 0.4,
-                                    )
-                                  : SizedBox(),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            var b = widget.locationImages[widget
-                                .locationImages.keys
-                                .elementAt((index * 2) + 1)];
-                            setState(() {
-                              widget.locationImages[widget.locationImages.keys
-                                  .elementAt((index * 2) + 1)] = !b!;
-                            });
-                          },
-                          child: Stack(
-                            children: [
-                              LocationImage(widget.locationImages.keys
-                                  .elementAt((2 * index) + 1)),
-                              widget.locationImages.values
-                                      .elementAt((2 * index) + 1)
-                                  ? Container(
-                                      decoration: const BoxDecoration(
-                                          color:
-                                              Color.fromARGB(149, 255, 29, 29),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20))),
-                                      height: screenHeight * 0.14,
-                                      width: screenWidth * 0.4,
-                                    )
-                                  : SizedBox(),
-                            ],
-                          ),
-                        ),
+                        LocationWidget(2 * index),
+                        LocationWidget((2 * index) + 1)
                       ],
                     );
                   },
@@ -174,5 +121,38 @@ class _GameScreenState extends State<GameScreen> {
 
   void leaveRoom(BuildContext context) {
     Navigator.pop(context);
+  }
+}
+
+class LocationWidget extends StatelessWidget {
+  final int index;
+  LocationWidget(this.index);
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final locationImages = context.watch<LocationProvider>().locationImages;
+    return GestureDetector(
+      onTap: () {
+        context
+            .read<LocationProvider>()
+            .toggleSelection(locationImages.keys.elementAt(index));
+      },
+      child: Stack(
+        children: [
+          LocationImage(locationImages.keys.elementAt(index)),
+          locationImages.values.elementAt(index)
+              ? Container(
+                  decoration: const BoxDecoration(
+                      color: Color.fromARGB(149, 255, 29, 29),
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  height: screenHeight * 0.14,
+                  width: screenWidth * 0.4,
+                )
+              : SizedBox(),
+        ],
+      ),
+    );
   }
 }

@@ -8,19 +8,19 @@ class SFButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      width: width,
-      // width: MediaQuery.of(context).size.width * 0.5,
-      child: Center(
-        child: MaterialButton(
-          onPressed: onPressed,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        height: height,
+        width: width,
+        // width: MediaQuery.of(context).size.width * 0.5,
+        child: Center(
           child: Text(text),
         ),
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            border: Border.all(width: 3.0)),
       ),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          border: Border.all(width: 3.0)),
     );
   }
 }

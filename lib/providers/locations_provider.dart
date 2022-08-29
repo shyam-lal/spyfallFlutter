@@ -4,8 +4,18 @@ import 'package:spyfall/constants/strings.dart';
 
 class LocationProvider with ChangeNotifier {
   Map<dynamic, dynamic> _locations = {};
-
   Map<dynamic, dynamic> get locations => _locations;
+
+  Map<String, bool> _locationImages = {
+    'bank.png': false,
+    'beach.png': false,
+    'circus.png': false,
+    'hotel.png': false,
+    'restaurant.png': false,
+    'school.png': false
+  };
+
+  Map<String, bool> get locationImages => _locationImages;
 
   // Fetch notifications
   Future getLocations() async {
@@ -21,23 +31,10 @@ class LocationProvider with ChangeNotifier {
       _locations = event.snapshot.value as Map<dynamic, dynamic>;
       notifyListeners();
     });
+  }
 
-    //   final databaseRef =
-    //       await FirebaseDatabase.instance.reference(); //database reference object
-    //   await databaseRef
-    //       .child(FirebaseKeys.notifications)
-    //       .once()
-    //       .then((DataSnapshot snapshot) {
-    //     final data = snapshot.value as Map<dynamic, dynamic>;
-    //     _notifications =
-    //         data.values.map((e) => NotificationModel.fromJson(e)).toList();
-    //     notifyListeners();
-    //   });
-    // }
-
-    // deleteNotification(int index) {
-    //   _notifications.removeAt(index);
-    //   notifyListeners();
-    // }
+  toggleSelection(String key) {
+    _locationImages[key] = !_locationImages[key]!;
+    notifyListeners();
   }
 }

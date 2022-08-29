@@ -17,6 +17,9 @@ class LobbyScreen extends StatelessWidget {
   Map<dynamic, dynamic> locations = {};
   var roomDetails;
   LobbyScreen(this.roomId, this.isAdmin, this.userName);
+  ////
+  var countDownTime = 8;
+  final timers = [5, 8, 10];
 
   @override
   Widget build(BuildContext context) {
@@ -35,101 +38,176 @@ class LobbyScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.white,
       body: Container(
         width: double.infinity,
-        child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                // color: Colors.white,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  // border: Border.all(color: Colors.black)
-                ),
-                height: screenHeight * 0.12,
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+            ),
+            height: screenHeight * 0.12,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(onPressed: null, icon: Icon(Icons.person)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(onPressed: null, icon: Icon(Icons.person)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Invite Code:"),
-                        ElevatedButton(
-                            onPressed: () {
-                              // Clipboard.setData(ClipboardData(text: "roomId"));
-                              // Share.share('check out my website https://example.com');
-                              // FlutterShare.share(title: 'title');
-                              share();
-                            },
-                            child: Row(
-                              children: [Text(roomId), Icon(Icons.share)],
-                            ))
-                      ],
-                    ),
-                    IconButton(onPressed: null, icon: Icon(Icons.menu))
+                    Text("Invite Code: "),
+                    // Share button
+                    SizedBox(
+                      height: screenHeight * 0.04,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Clipboard.setData(ClipboardData(text: "roomId"));
+                          // Share.share('check out my website https://example.com');
+                          // FlutterShare.share(title: 'title');
+                          share();
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              roomId,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            Icon(
+                              Icons.share,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    side: BorderSide(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(15))),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.white)),
+                      ),
+                    )
                   ],
                 ),
-              ),
-              SizedBox(
-                height: screenHeight * 0.1,
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                height: screenHeight * 0.6,
-                color: Colors.white,
-                child: StreamBuilder(
-                    stream: FirebaseDatabase.instance
-                        .ref()
-                        .child('rooms')
-                        .child(roomId)
-                        .child('players')
-                        .onValue
-                        .asBroadcastStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.active) {
-                        print('Snapshot: ${snapshot.data.toString()}');
-                        DatabaseEvent event = snapshot.data as DatabaseEvent;
-                        final players =
-                            event.snapshot.value as Map<dynamic, dynamic>;
-                        return ListView.builder(
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            itemCount: players.length,
-                            itemBuilder: (context, index) {
-                              return Center(
-                                  child: Container(
-                                color: Colors.red,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.person),
-                                    Text(players.keys.elementAt(index)),
-                                    IconButton(
-                                        onPressed: null,
-                                        icon: Icon(Icons.close))
-                                  ],
-                                ),
-                              ));
-                            });
-                      } else {
-                        return CircularProgressIndicator();
-                      }
-                    }),
-              ),
-              SizedBox(
-                height: screenHeight * 0.05,
-              ),
-              isAdmin
-                  ? SFButton(
-                      'Start Game', screenHeight * 0.08, screenWidth * .5, () {
-                      startGame(context);
+                IconButton(onPressed: null, icon: Icon(Icons.menu))
+              ],
+            ),
+          ),
+          // SizedBox(
+          //   height: screenHeight * 0.05,
+          // ),
+          isAdmin
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.timer),
+                    TimerDropDown((index) {
+                      countDownTime = timers[index];
                     })
-                  : SizedBox()
-            ]),
+                    // DropdownButton(
+                    //   underline: SizedBox(),
+                    //   value: selectedTime,
+                    //   icon: const Icon(
+                    //     Icons.keyboard_arrow_down,
+                    //     size: 16,
+                    //   ),
+                    //   items: timers.map((items) {
+                    //     return DropdownMenuItem(
+                    //       value: items,
+                    //       child: Text(
+                    //         items,
+                    //         style: TextStyle(fontSize: 13),
+                    //       ),
+                    //     );
+                    //   }).toList(),
+                    //   onChanged: (newValue) {
+                    //     // setState(() {
+                    //     //   selectedQuantity = newValue.toString();
+                    //     // });
+                    //   },
+                    // )
+                  ],
+                )
+              : SizedBox(),
+          // SizedBox(
+          //   height: screenHeight * 0.001,
+          // ),
+          Container(
+            margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
+            height: screenHeight * 0.6,
+            width: screenWidth * 0.6,
+            color: Colors.white,
+            child: StreamBuilder(
+                stream: FirebaseDatabase.instance
+                    .ref()
+                    .child('rooms')
+                    .child(roomId)
+                    .child('players')
+                    .onValue
+                    .asBroadcastStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    print('Snapshot: ${snapshot.data.toString()}');
+                    DatabaseEvent event = snapshot.data as DatabaseEvent;
+                    final players =
+                        event.snapshot.value as Map<dynamic, dynamic>;
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        itemCount: players.length,
+                        itemBuilder: (context, index) {
+                          ////////////
+                          ///////////
+                          ///////////
+                          //////////////////Player Item
+                          return Container(
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(1.0, 1.0),
+                                      spreadRadius: 2.0,
+                                      blurRadius: 2.0)
+                                ]),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Icon(Icons.person),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                  child: Text(players.keys.elementAt(index)),
+                                ),
+                                isAdmin
+                                    ? IconButton(
+                                        onPressed: () {
+                                          kickUser(
+                                              players.keys.elementAt(index));
+                                        },
+                                        icon: Icon(Icons.close))
+                                    : SizedBox()
+                              ],
+                            ),
+                          );
+                        });
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                }),
+          ),
+          SizedBox(
+            height: screenHeight * 0.05,
+          ),
+          isAdmin
+              ? SFButton('Start Game', screenHeight * 0.08, screenWidth * .5,
+                  () {
+                  startGame(context);
+                })
+              : SizedBox()
+        ]),
       ),
     );
   }
@@ -141,8 +219,8 @@ class LobbyScreen extends StatelessWidget {
     final location = (locations.keys.toList()..shuffle()).first;
     currentLocation = location;
     await databaseRef.child('location').set(location);
-
-    databaseRef.child('isplaying').set(true);
+    await databaseRef.child('time').set(countDownTime);
+    // await databaseRef.child('isplaying').set(true);
     fetchRoomDetails(context, location);
   }
 
@@ -181,8 +259,11 @@ class LobbyScreen extends StatelessWidget {
           playerRole = uploadData[userName];
         }
 
+        databaseRef.child('isplaying').set(true);
+
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => GameScreen(currentLocation, playerRole)));
+            builder: (context) =>
+                GameScreen(currentLocation, playerRole, countDownTime)));
       });
     });
   }
@@ -197,8 +278,23 @@ class LobbyScreen extends StatelessWidget {
         .listen((event) {
       final value = event.snapshot.value as bool;
       if (value) {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => GameScreen(currentLocation, playerRole)));
+        databaseRef
+            .child(FirebaseKeys.rooms)
+            .child(roomId)
+            .once()
+            .then((DatabaseEvent event) {
+          final data = event.snapshot.value as Map<dynamic, dynamic>;
+          roomDetails = RoomModel.fromJson(data);
+          currentLocation = roomDetails.location;
+          // final playerRole = roomDetails.players[userName];
+          countDownTime = roomDetails.time;
+          var players = roomDetails.players as Map<dynamic, dynamic>;
+          playerRole = players[userName];
+        }).then((value) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  GameScreen(currentLocation, playerRole, countDownTime)));
+        });
       }
     });
   }
@@ -212,5 +308,57 @@ class LobbyScreen extends StatelessWidget {
         text: 'Example share text',
         linkUrl: 'https://flutter.dev/',
         chooserTitle: 'Example Chooser Title');
+  }
+
+  Future kickUser(String playerName) async {
+    final databaseRef =
+        FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
+    databaseRef.child('players').child(playerName).remove();
+  }
+}
+
+//Dropdown
+class TimerDropDown extends StatefulWidget {
+  // const TimerDropDown({Key? key}) : super(key: key);
+  final ValueChanged<int> onTimerChanged;
+  TimerDropDown(this.onTimerChanged);
+
+  @override
+  State<TimerDropDown> createState() => _TimerDropDownState();
+}
+
+class _TimerDropDownState extends State<TimerDropDown> {
+  //drop down items
+  var selectedTime = "8 min";
+  // var timers = {5:'5 min',8: '8 min',10: '10 min'};
+  var timers = ['5 min', '8 min', '10 min'];
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      underline: SizedBox(),
+      value: selectedTime,
+      icon: const Icon(
+        Icons.keyboard_arrow_down,
+        size: 16,
+      ),
+      items: timers.map((items) {
+        return DropdownMenuItem(
+          value: items,
+          child: Text(
+            items,
+            style: TextStyle(fontSize: 13),
+          ),
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        // final index = timers.values.firstWhere((element) => false)
+        // List<String> values = timers.values as List<String>;
+        widget.onTimerChanged(timers.indexOf(newValue.toString()));
+        setState(() {
+          selectedTime = newValue.toString();
+        });
+      },
+    );
   }
 }

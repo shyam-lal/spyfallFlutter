@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
               "SPYFALL",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             SFButton("CREATE ROOM", screenHeight * 0.08, screenWidth * .5, () {
@@ -68,7 +68,7 @@ class HomeScreen extends StatelessWidget {
   createRoomTapped(BuildContext context) {
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = generateRandomString(5);
-    final roomModel = RoomModel(roomId, 'dummy', {userName: ''}, false);
+    final roomModel = RoomModel(roomId, 'dummy', {userName: ''}, false, 8);
     roomRef
         .child(roomId)
         // .set({'hello': 'world'}).whenComplete(() {
