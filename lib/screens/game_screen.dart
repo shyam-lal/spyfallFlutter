@@ -9,12 +9,11 @@ import 'package:spyfall/custom_widgets/exit_alert.dart';
 import 'package:spyfall/custom_widgets/sf_images.dart';
 import 'package:spyfall/custom_widgets/sf_widgets.dart';
 import 'package:spyfall/providers/locations_provider.dart';
+import 'package:spyfall/providers/room_provider.dart';
 import 'package:spyfall/providers/user_provider.dart';
 
 class GameScreen extends StatefulWidget {
-  final int countdownTime;
-  final String location, role, roomId;
-  GameScreen(this.location, this.role, this.countdownTime, this.roomId);
+  // GameScreen(this.location, this.role, this.countdownTime, this.roomId);
   bool gameIsActive = true;
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -29,9 +28,21 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  int? countdownTime;
+  String? location, role, roomId;
   var isAdmin;
   @override
   Widget build(BuildContext context) {
+    print("===========================");
+    //Routes
+    final routes =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    countdownTime = routes['time'] as int;
+    location = routes['location'].toString();
+    role = routes['role'].toString();
+    roomId = routes['id'].toString();
+    //
+
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     isAdmin = context.watch<UserProvider>().isAdmin;
@@ -40,7 +51,7 @@ class _GameScreenState extends State<GameScreen> {
         showDialog(
             context: context,
             builder: (BuildContext buildContext) {
-              return ExitAlert(widget.roomId, 1);
+              return ExitAlert(roomId!, 1);
             });
         return Future.value(false);
       },
@@ -60,8 +71,17 @@ class _GameScreenState extends State<GameScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const IconButton(
-                          onPressed: null, icon: Icon(Icons.person)),
+                      IconButton(
+                          onPressed: () {
+                            if (isAdmin) {
+                              context.read<RoomProvider>().deleteRoom(roomId!);
+                            }
+
+                            Navigator.popUntil(
+                                context, ModalRoute.withName('/'));
+                            // Navigator.popunti
+                          },
+                          icon: Icon(Icons.person)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
@@ -81,7 +101,7 @@ class _GameScreenState extends State<GameScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   child: CountDownTimer(
-                      secondsRemaining: (widget.countdownTime * 60),
+                      secondsRemaining: (countdownTime! * 60),
                       whenTimeExpires: () {
                         widget.gameIsActive = false;
                         showDialog(
@@ -92,9 +112,9 @@ class _GameScreenState extends State<GameScreen> {
                       }),
                 ),
                 SFSpace(0.02, 0),
-                Text("The location is ${widget.location}"),
+                Text("The location is ${location}"),
                 SFSpace(0.02, 0),
-                Text('Your are the ${widget.role}'),
+                Text('Your are the ${role}'),
                 SFSpace(0.02, 0),
                 SFButton('Restart Round', screenHeight * 0.05, screenWidth * .3,
                     () {
@@ -138,8 +158,8 @@ class _GameScreenState extends State<GameScreen> {
     final databaseRef = await FirebaseDatabase.instance
         .ref()
         .child(FirebaseKeys.rooms)
-        .child(widget.roomId);
-    databaseRef.child('isPlaying').set(false).then((value) {
+        .child(roomId!);
+    databaseRef.child('isplaying').set(false).then((value) {
       Navigator.pop(context);
     });
 

@@ -9,6 +9,7 @@ import 'package:spyfall/custom_widgets/sf_widgets.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
+import 'package:spyfall/utitlities/popup-messages.dart';
 
 class AlertScreen extends StatelessWidget {
   // const AlertScreen({Key? key}) : super(key: key);
@@ -101,13 +102,25 @@ class AlertScreen extends StatelessWidget {
     print('111111111111111111111join taped111111111111111');
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = roomIdController.text;
-    // final roomModel = RoomModel(roomId, 'dummy', {1: 'njan'}, false);
-    roomRef.child(roomId).child('players').child(name).set('')
-        // .set({'hello': 'world'}).whenComplete(() {
-        // .set({'nee': 'spy'})
-        .whenComplete(() {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => LobbyScreen(roomId, false, name)));
+
+    roomRef.child(roomId).once().then((DatabaseEvent event) {
+      if (event.snapshot.exists) {
+        roomRef.child(roomId).child('players').child(name).set('')
+            // .set({'hello': 'world'}).whenComplete(() {
+            // .set({'nee': 'spy'})
+            .whenComplete(() {
+          // Navigator.of(context).push(MaterialPageRoute(
+          //     builder: (context) => LobbyScreen(roomId, false, name)));
+          Navigator.pushNamed(context, '/lobby', arguments: {
+            'roomId': roomId,
+            'isAdmin': false,
+            'userName': name
+          });
+        });
+      } else {
+        Navigator.pop(context);
+        Messages.displayMessage(context, "Enter a valid Room Id");
+      }
     });
   }
 
@@ -123,8 +136,10 @@ class AlertScreen extends StatelessWidget {
         // .set({'hello': 'world'}).whenComplete(() {
         .set(roomModel.toJson())
         .whenComplete(() {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => LobbyScreen(roomId, true, name)));
+      // Navigator.of(context).push(MaterialPageRoute(
+      //     builder: (context) => LobbyScreen(roomId, true, name)));
+      Navigator.pushNamed(context, '/lobby',
+          arguments: {'roomId': roomId, 'isAdmin': true, 'userName': name});
     });
   }
 

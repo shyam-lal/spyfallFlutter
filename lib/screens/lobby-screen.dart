@@ -9,25 +9,34 @@ import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/exit_alert.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/locations_provider.dart';
+import 'package:spyfall/providers/room_provider.dart';
 import 'package:spyfall/screens/game_screen.dart';
 
 class LobbyScreen extends StatelessWidget {
   var currentLocation, playerRole;
-  final String roomId, userName;
-  final bool isAdmin;
+  String? roomId, userName;
+  bool? isAdmin;
   Map<dynamic, dynamic> locations = {};
   var roomDetails;
-  LobbyScreen(this.roomId, this.isAdmin, this.userName);
+  // LobbyScreen(this.roomId, this.isAdmin, this.userName);
   ////
   var countDownTime = 8;
   final timers = [5, 8, 10];
 
   @override
   Widget build(BuildContext context) {
+    ////From route
+    final routes =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    roomId = routes['roomId'].toString();
+    userName = routes['userName'].toString();
+    isAdmin = routes['isAdmin'] as bool;
+
+    ///
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     print('---------------LobbyScreen--------------');
-    if (!isAdmin) {
+    if (!isAdmin!) {
       listenForStarting(context);
     }
     locations = context.watch<LocationProvider>().locations;
@@ -40,11 +49,29 @@ class LobbyScreen extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext buildContext) {
-              return ExitAlert(roomId, 0);
-            });
+        navigateHome(context);
+        // if (isAdmin!) {
+        //   showDialog(
+        //       context: context,
+        //       builder: (BuildContext buildContext) {
+        //         return ExitAlert(roomId!, 0);
+        //       });
+        // } else {
+        //   context.read<RoomProvider>().memeberLeave(roomId!, userName!);
+        //   Navigator.popUntil(context, ModalRoute.withName('/'));
+        // }
+        // isAdmin!
+        //     ? showDialog(
+        //         context: context,
+        //         builder: (BuildContext buildContext) {
+        //           return ExitAlert(roomId!, 0);
+        //         })
+        //     :
+        //     // print("--------------");
+        //     context.read<RoomProvider>().memeberLeave(roomId!, userName!);
+        // Navigator.popUntil(context, ModalRoute.withName('/'));
+        // Navigator.pop(context);
+
         return Future.value(false);
       },
       child: Scaffold(
@@ -61,7 +88,11 @@ class LobbyScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(onPressed: null, icon: Icon(Icons.person)),
+                  IconButton(
+                      onPressed: () {
+                        navigateHome(context);
+                      },
+                      icon: Icon(Icons.person)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -79,7 +110,7 @@ class LobbyScreen extends StatelessWidget {
                           child: Row(
                             children: [
                               Text(
-                                roomId,
+                                roomId!,
                                 style: TextStyle(color: Colors.black),
                               ),
                               Icon(
@@ -106,7 +137,7 @@ class LobbyScreen extends StatelessWidget {
             // SizedBox(
             //   height: screenHeight * 0.05,
             // ),
-            isAdmin
+            isAdmin!
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -151,7 +182,7 @@ class LobbyScreen extends StatelessWidget {
                   stream: FirebaseDatabase.instance
                       .ref()
                       .child('rooms')
-                      .child(roomId)
+                      .child(roomId!)
                       .child('players')
                       .onValue
                       .asBroadcastStream(),
@@ -177,6 +208,7 @@ class LobbyScreen extends StatelessWidget {
                             //////////////////Player Item
                             return Container(
                               margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                               decoration: const BoxDecoration(
                                   color: Colors.white,
                                   borderRadius:
@@ -198,7 +230,7 @@ class LobbyScreen extends StatelessWidget {
                                         const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                     child: Text(players.keys.elementAt(index)),
                                   ),
-                                  isAdmin
+                                  isAdmin!
                                       ? IconButton(
                                           onPressed: () {
                                             kickUser(
@@ -211,14 +243,14 @@ class LobbyScreen extends StatelessWidget {
                             );
                           });
                     } else {
-                      return CircularProgressIndicator();
+                      return Center(child: CircularProgressIndicator());
                     }
                   }),
             ),
             SizedBox(
               height: screenHeight * 0.05,
             ),
-            isAdmin
+            isAdmin!
                 ? SFButton('Start Game', screenHeight * 0.08, screenWidth * .5,
                     () {
                     startGame(context);
@@ -230,9 +262,24 @@ class LobbyScreen extends StatelessWidget {
     );
   }
 
+  void navigateHome(BuildContext context) {
+    if (isAdmin!) {
+      showDialog(
+          context: context,
+          builder: (BuildContext buildContext) {
+            return ExitAlert(roomId!, 0);
+          });
+    } else {
+      context.read<RoomProvider>().memeberLeave(roomId!, userName!);
+      Navigator.popUntil(context, ModalRoute.withName('/'));
+    }
+  }
+
   Future startGame(BuildContext context) async {
-    final databaseRef =
-        FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
+    final databaseRef = FirebaseDatabase.instance
+        .ref()
+        .child(FirebaseKeys.rooms)
+        .child(roomId!);
 
     final location = (locations.keys.toList()..shuffle()).first;
     currentLocation = location;
@@ -243,8 +290,10 @@ class LobbyScreen extends StatelessWidget {
   }
 
   Future fetchRoomDetails(BuildContext context, String location) async {
-    final databaseRef =
-        FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
+    final databaseRef = FirebaseDatabase.instance
+        .ref()
+        .child(FirebaseKeys.rooms)
+        .child(roomId!);
 
     final roles = locations[location];
 
@@ -279,9 +328,15 @@ class LobbyScreen extends StatelessWidget {
 
         databaseRef.child('isplaying').set(true);
 
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => GameScreen(
-                currentLocation, playerRole, countDownTime, roomId)));
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => GameScreen(
+        //         currentLocation, playerRole, countDownTime, roomId!)));
+        Navigator.pushNamed(context, '/gameScreen', arguments: {
+          'location': currentLocation,
+          'role': playerRole,
+          'time': countDownTime,
+          'id': roomId
+        });
       });
     });
   }
@@ -290,7 +345,7 @@ class LobbyScreen extends StatelessWidget {
     final databaseRef = FirebaseDatabase.instance.ref();
     final sub = databaseRef
         .child(FirebaseKeys.rooms)
-        .child(roomId)
+        .child(roomId!)
         .child('isplaying')
         .onValue
         .listen((event) {
@@ -298,7 +353,7 @@ class LobbyScreen extends StatelessWidget {
       if (value) {
         databaseRef
             .child(FirebaseKeys.rooms)
-            .child(roomId)
+            .child(roomId!)
             .once()
             .then((DatabaseEvent event) {
           final data = event.snapshot.value as Map<dynamic, dynamic>;
@@ -309,9 +364,15 @@ class LobbyScreen extends StatelessWidget {
           var players = roomDetails.players as Map<dynamic, dynamic>;
           playerRole = players[userName];
         }).then((value) {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => GameScreen(
-                  currentLocation, playerRole, countDownTime, roomId)));
+          // Navigator.of(context).push(MaterialPageRoute(
+          //     builder: (context) => GameScreen(
+          //         currentLocation, playerRole, countDownTime, roomId!)));
+          Navigator.pushNamed(context, '/gameScreen', arguments: {
+            'location': currentLocation,
+            'role': playerRole,
+            'time': countDownTime,
+            'id': roomId
+          });
         });
       }
     });
@@ -329,8 +390,10 @@ class LobbyScreen extends StatelessWidget {
   }
 
   Future kickUser(String playerName) async {
-    final databaseRef =
-        FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms).child(roomId);
+    final databaseRef = FirebaseDatabase.instance
+        .ref()
+        .child(FirebaseKeys.rooms)
+        .child(roomId!);
     databaseRef.child('players').child(playerName).remove();
   }
 

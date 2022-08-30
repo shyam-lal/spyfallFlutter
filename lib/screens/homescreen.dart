@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     userName = context.watch<UserProvider>().userName;
-    final nameController = new TextEditingController();
+    // final nameController = new TextEditingController();
     // nameController.text = userName!;
 
     return Scaffold(
@@ -113,8 +113,10 @@ class HomeScreen extends StatelessWidget {
         // .set({'hello': 'world'}).whenComplete(() {
         .set(roomModel.toJson())
         .whenComplete(() {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => LobbyScreen(roomId, true, userName!)));
+      // Navigator.of(context).push(MaterialPageRoute(
+      //     builder: (context) => LobbyScreen(roomId, true, userName!)));
+      Navigator.pushNamed(context, '/lobby',
+          arguments: {'roomId': roomId, 'isAdmin': true, 'userName': userName});
     });
   }
 

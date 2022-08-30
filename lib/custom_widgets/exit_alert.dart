@@ -1,8 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 
 import 'package:spyfall/custom_widgets/sf_widgets.dart';
+import 'package:spyfall/providers/room_provider.dart';
 
 class ExitAlert extends StatelessWidget {
   final int exitType;
@@ -58,15 +60,20 @@ class ExitAlert extends StatelessWidget {
   }
 
   Future deleteRoom(BuildContext context) async {
-    final databaseRef = await FirebaseDatabase.instance
-        .ref()
-        .child(FirebaseKeys.rooms)
-        .child(roomId);
-    databaseRef.remove().then((value) {
-      final nav = Navigator.of(context);
-      nav.pop();
-      nav.pop();
-    });
+    // final databaseRef = await FirebaseDatabase.instance
+    //     .ref()
+    //     .child(FirebaseKeys.rooms)
+    //     .child(roomId);
+    // databaseRef.remove().then((value) {
+    //   final nav = Navigator.of(context);
+    //   nav.pop();
+    //   nav.pop();
+    // });
+    context.read<RoomProvider>().deleteRoom(roomId);
+    Navigator.popUntil(context, ModalRoute.withName('/'));
+    // final nav = Navigator.of(context);
+    // nav.pop();
+    // nav.pop();
   }
 
   Future restartRound(BuildContext context) async {

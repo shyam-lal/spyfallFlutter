@@ -2,9 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/providers/locations_provider.dart';
+import 'package:spyfall/providers/room_provider.dart';
 import 'package:spyfall/providers/user_provider.dart';
+import 'package:spyfall/screens/game_screen.dart';
 import 'package:spyfall/screens/homescreen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:spyfall/screens/lobby-screen.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +35,8 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => LocationProvider()),
-      ChangeNotifierProvider(create: (_) => UserProvider())
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(create: (_) => RoomProvider())
     ],
     child: MyApp(),
   ));
@@ -44,7 +48,13 @@ class MyApp extends StatelessWidget {
     // Firebase.initializeApp();
 
     return MaterialApp(
-      home: HomeScreen(),
+      // home: HomeScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomeScreen(),
+        '/lobby': (context) => LobbyScreen(),
+        '/gameScreen': (context) => GameScreen(),
+      },
     );
   }
 }
