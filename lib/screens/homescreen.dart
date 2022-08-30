@@ -12,53 +12,92 @@ import 'package:spyfall/screens/lobby-screen.dart';
 
 class HomeScreen extends StatelessWidget {
   List locations = [];
-  String userName = "";
+  String? userName;
 
   @override
   Widget build(BuildContext context) {
+    print("******************");
     // userName = context.watch<UserProvider>().userName;
+    if (userName == null) {
+      context.read<UserProvider>().getUserName();
+    }
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    userName = context.watch<UserProvider>().userName;
+    final nameController = new TextEditingController();
+    // nameController.text = userName!;
 
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        width: screenWidth,
+        // height: screenHeight,
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "SPYFALL",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+            SizedBox(
+              height: screenHeight * 0.05,
             ),
-            const SizedBox(
-              height: 30,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Welcome $userName",
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                ),
+              ],
             ),
-            SFButton("CREATE ROOM", screenHeight * 0.08, screenWidth * .5, () {
-              context.read<UserProvider>().setAdminStatus(true);
-              userName.isEmpty
-                  ? showDialog(
-                      context: context,
-                      builder: (BuildContext buildContext) {
-                        return AlertScreen('Enter Name', 'Create Room', true,
-                            AlertType.name, '');
-                      })
-                  : createRoomTapped(context);
-            }),
+            SizedBox(
+              height: screenHeight * 0.2,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "SPYFALL",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: screenHeight * 0.1,
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                  screenWidth * 0.1, 0, screenWidth * 0.1, 0),
+              child: SFButton(
+                  "CREATE ROOM", screenHeight * 0.08, screenWidth * .5, () {
+                context.read<UserProvider>().setAdminStatus(true);
+                userName!.isEmpty
+                    ? showDialog(
+                        context: context,
+                        builder: (BuildContext buildContext) {
+                          return AlertScreen('Enter Name', 'Create Room', true,
+                              AlertType.name, '');
+                        })
+                    : createRoomTapped(context);
+              }),
+            ),
             const SizedBox(
               height: 30.0,
             ),
-            SFButton("JOIN ROOM", screenHeight * 0.08, screenWidth * .5, () {
-              context.read<UserProvider>().setAdminStatus(false);
-              showDialog(
-                  context: context,
-                  builder: (BuildContext buildContext) {
-                    return userName.isEmpty
-                        ? AlertScreen(
-                            'Enter Name', 'Join', true, AlertType.name, '')
-                        : AlertScreen('Room ID', 'Join Room', true,
-                            AlertType.join, userName);
-                  });
-            }),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                  screenWidth * 0.1, 0, screenWidth * 0.1, 0),
+              child: SFButton(
+                  "JOIN ROOM", screenHeight * 0.08, screenWidth * .5, () {
+                context.read<UserProvider>().setAdminStatus(false);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext buildContext) {
+                      return userName!.isEmpty
+                          ? AlertScreen(
+                              'Enter Name', 'Join', true, AlertType.name, '')
+                          : AlertScreen('Room ID', 'Join Room', true,
+                              AlertType.join, userName!);
+                    });
+              }),
+            ),
           ],
         ),
       ),
@@ -75,7 +114,7 @@ class HomeScreen extends StatelessWidget {
         .set(roomModel.toJson())
         .whenComplete(() {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => LobbyScreen(roomId, true, userName)));
+          builder: (context) => LobbyScreen(roomId, true, userName!)));
     });
   }
 

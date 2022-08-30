@@ -113,7 +113,7 @@ class AlertScreen extends StatelessWidget {
 
 //Create Room
   createRoom(BuildContext context, String name) {
-    // context.read<UserProvider>().setUserName(name);
+    context.read<UserProvider>().setUserName(name);
 
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = generateRandomString(5);

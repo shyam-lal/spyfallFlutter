@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spyfall/constants/strings.dart';
 
 class UserProvider with ChangeNotifier {
@@ -9,7 +10,15 @@ class UserProvider with ChangeNotifier {
   String get userName => _userName;
   bool get isAdmin => _isAdmin!;
 
-  setUserName(String name) {
+  Future getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _userName = prefs.getString('userName') ?? "";
+    notifyListeners();
+  }
+
+  Future setUserName(String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('userName', name);
     _userName = name;
     notifyListeners();
   }
