@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/alert.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
+import 'package:spyfall/custom_widgets/loading-alert.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
@@ -36,8 +37,40 @@ class HomeScreen extends StatelessWidget {
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: screenHeight * 0.05,
+              height: screenHeight * 0.025,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(onPressed: null, icon: Icon(Icons.share)),
+                // PopupMenuButton(
+                //   icon: Icon(Icons.menu),
+                //   onSelected: (value) {
+                //     if (value == 1) {
+                //       // deleteNotification(context);
+                //       print("Delete");
+                //     } else {
+                //       // approveNotifcation(context);
+                //       print("Approve");
+                //     }
+                //   },
+                //   // child: (userData!.access != 0)
+                //   //     ? Center(child: Icon(Icons.menu))
+                //   //     : SizedBox(),
+                //   itemBuilder: (context) {
+                //     return [
+                //       PopupMenuItem(value: 1, child: Text("How to play")),
+                //       PopupMenuItem(value: 2, child: Text(""))
+                //     ];
+                //   },
+                // ),
+                IconButton(
+                    onPressed: null, icon: Icon(Icons.help_outline_sharp))
+              ],
+            ),
+            // SizedBox(
+            //   height: screenHeight * 0.025,
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -48,7 +81,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             SizedBox(
-              height: screenHeight * 0.2,
+              height: screenHeight * 0.15,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -98,6 +131,23 @@ class HomeScreen extends StatelessWidget {
                     });
               }),
             ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/rules');
+              },
+              child: Container(
+                margin: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                child: Center(
+                  child: Text(
+                    "How to play",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -105,6 +155,16 @@ class HomeScreen extends StatelessWidget {
   }
 
   createRoomTapped(BuildContext context) {
+    showDialog(
+        // barrierDismissible: false,
+        context: context,
+        builder: (BuildContext buildContext) {
+          return WillPopScope(
+              onWillPop: () => Future.value(false),
+              child: LoadingAlert("Creating World.........."));
+          //
+          //
+        });
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = generateRandomString(5);
     final roomModel = RoomModel(roomId, 'dummy', {userName: ''}, false, 8);

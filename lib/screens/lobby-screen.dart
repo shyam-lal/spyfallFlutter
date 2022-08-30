@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/exit_alert.dart';
+import 'package:spyfall/custom_widgets/loading-alert.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/locations_provider.dart';
 import 'package:spyfall/providers/room_provider.dart';
@@ -36,6 +37,7 @@ class LobbyScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     print('---------------LobbyScreen--------------');
+    print('=================${ModalRoute.of(context)?.settings.name}');
     if (!isAdmin!) {
       listenForStarting(context);
     }
@@ -276,6 +278,16 @@ class LobbyScreen extends StatelessWidget {
   }
 
   Future startGame(BuildContext context) async {
+    showDialog(
+        // barrierDismissible: false,
+        context: context,
+        builder: (BuildContext buildContext) {
+          return WillPopScope(
+              onWillPop: () => Future.value(false),
+              child: LoadingAlert("Collecting Locations.........."));
+          //
+          //
+        });
     final databaseRef = FirebaseDatabase.instance
         .ref()
         .child(FirebaseKeys.rooms)

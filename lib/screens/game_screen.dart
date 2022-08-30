@@ -34,6 +34,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     print("===========================");
+    print('=================${ModalRoute.of(context)?.settings.name}');
     //Routes
     final routes =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
@@ -160,10 +161,12 @@ class _GameScreenState extends State<GameScreen> {
         .child(FirebaseKeys.rooms)
         .child(roomId!);
     databaseRef.child('isplaying').set(false).then((value) {
-      Navigator.pop(context);
+      Navigator.popUntil(context, ModalRoute.withName('/lobby'));
+      // Navigator.pop(context);
     });
 
-    Navigator.pop(context);
+    // Navigator.pop(context);
+    // Navigator.popUntil(context, ModalRoute.withName('/lobby'));
   }
 }
 

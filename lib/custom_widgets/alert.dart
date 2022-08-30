@@ -118,7 +118,8 @@ class AlertScreen extends StatelessWidget {
           });
         });
       } else {
-        Navigator.pop(context);
+        // Navigator.pop(context);
+        Navigator.popUntil(context, ModalRoute.withName('/'));
         Messages.displayMessage(context, "Enter a valid Room Id");
       }
     });
