@@ -193,11 +193,11 @@ class _GameScreenState extends State<GameScreen> {
                               LocationWidget((2 * index) + 1)
                             ],
                           ),
-                          // (index == 1)
-                          //     ? SFBannerAd(AdManager.bannerAdUnitTestId)
-                          //     : (index == 5)
-                          //         ? SFBannerAd(AdManager.bannerAdUnitTestId)
-                          //         : SizedBox()
+                          (index == 1)
+                              ? SFBannerAd(AdManager.gameScreenBannerAd1)
+                              : (index == 5)
+                                  ? SFBannerAd(AdManager.gameScreenBannerAd2)
+                                  : SizedBox()
                         ],
                       );
                     },
