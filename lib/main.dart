@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/providers/locations_provider.dart';
 import 'package:spyfall/providers/room_provider.dart';
@@ -46,6 +47,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    _initGoogleMobileAds();
     // Firebase.initializeApp();
 
     return MaterialApp(
@@ -58,5 +60,10 @@ class MyApp extends StatelessWidget {
         '/rules': (context) => RulesScreen(),
       },
     );
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    // TODO: Initialize Google Mobile Ads SDK
+    return MobileAds.instance.initialize();
   }
 }
