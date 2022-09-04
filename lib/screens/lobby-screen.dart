@@ -267,7 +267,7 @@ class LobbyScreen extends StatelessWidget {
             SizedBox(
               height: screenHeight * 0.01,
             ),
-            SFBannerAd(AdManager.bannerAdUnitTestId)
+            SFBannerAd(AdManager.lobbyBannerAd)
           ]),
         ),
       ),
