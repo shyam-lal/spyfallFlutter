@@ -10,6 +10,7 @@ import 'package:spyfall/custom_widgets/ad-widgets.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/exit_alert.dart';
 import 'package:spyfall/custom_widgets/loading-alert.dart';
+import 'package:spyfall/managers/adsense-manager.dart';
 import 'package:spyfall/managers/g_ads_manager.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/locations_provider.dart';
@@ -224,7 +225,8 @@ class LobbyScreen extends StatelessWidget {
             SizedBox(
               height: screenHeight * 0.01,
             ),
-            SFBannerAd(AdManager.bannerAdUnitTestId)
+            // SFBannerAd(AdManager.bannerAdUnitTestId)
+            // adsenseAdsView()
           ]),
         ),
       ),
