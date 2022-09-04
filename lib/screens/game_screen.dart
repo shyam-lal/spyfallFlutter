@@ -17,14 +17,14 @@ class GameScreen extends StatefulWidget {
   bool gameIsActive = true;
   @override
   State<GameScreen> createState() => _GameScreenState();
-  var locationImages = {
-    'bank.png': false,
-    'beach.png': false,
-    'circus.png': false,
-    'hotel.png': false,
-    'restaurant.png': false,
-    'school.png': false
-  };
+  // var locationImages = {
+  //   'bank.png': false,
+  //   'beach.png': false,
+  //   'circus.png': false,
+  //   'hotel.png': false,
+  //   'restaurant.png': false,
+  //   'school.png': false
+  // };
 }
 
 class _GameScreenState extends State<GameScreen> {
@@ -134,7 +134,7 @@ class _GameScreenState extends State<GameScreen> {
                 ListView.separated(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: 3,
+                    itemCount: 6,
                     itemBuilder: (BuildContext context, int index) {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

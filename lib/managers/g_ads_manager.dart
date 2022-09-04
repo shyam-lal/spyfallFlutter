@@ -11,7 +11,7 @@ class AdManager {
     }
   }
 
-  static String get interstitialAdUnitId {
+  static String get interstitialAdUnitTestId {
     if (Platform.isAndroid) {
       return "ca-app-pub-3940256099942544/1033173712";
     } else if (Platform.isIOS) {
@@ -21,7 +21,7 @@ class AdManager {
     }
   }
 
-  static String get rewardedAdUnitId {
+  static String get rewardedAdUnitTestId {
     if (Platform.isAndroid) {
       return "ca-app-pub-3940256099942544/5224354917";
     } else if (Platform.isIOS) {
@@ -29,5 +29,9 @@ class AdManager {
     } else {
       throw new UnsupportedError("Unsupported platform");
     }
+  }
+
+  static String get nativeAdvancedTestId {
+    return "ca-app-pub-3940256099942544/2247696110";
   }
 }

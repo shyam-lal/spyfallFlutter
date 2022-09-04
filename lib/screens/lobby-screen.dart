@@ -6,6 +6,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
+import 'package:spyfall/custom_widgets/ad-widgets.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/exit_alert.dart';
 import 'package:spyfall/custom_widgets/loading-alert.dart';
@@ -265,7 +266,7 @@ class LobbyScreen extends StatelessWidget {
             SizedBox(
               height: screenHeight * 0.01,
             ),
-            SFBannerAd()
+            SFBannerAd(AdManager.bannerAdUnitTestId)
           ]),
         ),
       ),
@@ -470,53 +471,5 @@ class _TimerDropDownState extends State<TimerDropDown> {
         });
       },
     );
-  }
-}
-
-class SFBannerAd extends StatefulWidget {
-  const SFBannerAd({Key? key}) : super(key: key);
-
-  @override
-  State<SFBannerAd> createState() => _SFBannerAdState();
-}
-
-class _SFBannerAdState extends State<SFBannerAd> {
-  BannerAd? _bannerAd;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    BannerAd(
-      adUnitId: AdManager.bannerAdUnitTestId,
-      request: AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          setState(() {
-            _bannerAd = ad as BannerAd;
-          });
-        },
-        onAdFailedToLoad: (ad, err) {
-          print('Failed to load a banner ad: ${err.message}');
-          ad.dispose();
-        },
-      ),
-    ).load();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_bannerAd != null) {
-      return Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-            width: _bannerAd!.size.width.toDouble(),
-            height: _bannerAd!.size.height.toDouble(),
-            child: AdWidget(ad: _bannerAd!),
-          ));
-    } else {
-      return SizedBox();
-    }
   }
 }
