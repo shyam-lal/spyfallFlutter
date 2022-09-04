@@ -135,7 +135,8 @@ class LobbyScreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  IconButton(onPressed: null, icon: Icon(Icons.menu))
+                  SizedBox()
+                  // IconButton(onPressed: null, icon: Icon(Icons.menu))
                 ],
               ),
             ),

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
@@ -37,35 +38,14 @@ class HomeScreen extends StatelessWidget {
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: screenHeight * 0.025,
+              height: screenHeight * 0.01,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(onPressed: null, icon: Icon(Icons.share)),
-                // PopupMenuButton(
-                //   icon: Icon(Icons.menu),
-                //   onSelected: (value) {
-                //     if (value == 1) {
-                //       // deleteNotification(context);
-                //       print("Delete");
-                //     } else {
-                //       // approveNotifcation(context);
-                //       print("Approve");
-                //     }
-                //   },
-                //   // child: (userData!.access != 0)
-                //   //     ? Center(child: Icon(Icons.menu))
-                //   //     : SizedBox(),
-                //   itemBuilder: (context) {
-                //     return [
-                //       PopupMenuItem(value: 1, child: Text("How to play")),
-                //       PopupMenuItem(value: 2, child: Text(""))
-                //     ];
-                //   },
-                // ),
-                IconButton(
-                    onPressed: null, icon: Icon(Icons.help_outline_sharp))
+                IconButton(onPressed: share, icon: Icon(Icons.share)),
+                // IconButton(
+                //     onPressed: null, icon: Icon(Icons.help_outline_sharp))
               ],
             ),
             // SizedBox(
@@ -200,6 +180,15 @@ class HomeScreen extends StatelessWidget {
     return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
         .join()
         .toString();
+  }
+
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'Example share',
+        text:
+            'Hey there \nPlay SPYFALL either using our android app\nhttps://play.google.com/store/apps/details?id=com.inceptra.haiku\nor using our webapp https://spyfall-e9282.web.app/ and play together',
+        // linkUrl: 'https://flutter.dev/',
+        chooserTitle: 'Example Chooser Title');
   }
 }
 

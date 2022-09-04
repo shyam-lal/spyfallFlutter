@@ -89,7 +89,7 @@ class _GameScreenState extends State<GameScreen> {
                           // Text("Invite Code:"),
                         ],
                       ),
-                      const IconButton(onPressed: null, icon: Icon(Icons.menu))
+                      // const IconButton(onPressed: null, icon: Icon(Icons.menu))
                     ],
                   ),
                 ),
