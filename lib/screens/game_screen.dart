@@ -2,12 +2,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
+import 'package:spyfall/custom_widgets/ad-widgets.dart';
 import 'package:spyfall/custom_widgets/alert.dart';
 import 'package:spyfall/custom_widgets/countdown_timer.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/exit_alert.dart';
 import 'package:spyfall/custom_widgets/sf_images.dart';
 import 'package:spyfall/custom_widgets/sf_widgets.dart';
+import 'package:spyfall/managers/g_ads_manager.dart';
 import 'package:spyfall/providers/locations_provider.dart';
 import 'package:spyfall/providers/room_provider.dart';
 import 'package:spyfall/providers/user_provider.dart';
@@ -136,11 +138,20 @@ class _GameScreenState extends State<GameScreen> {
                     shrinkWrap: true,
                     itemCount: 6,
                     itemBuilder: (BuildContext context, int index) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      return Column(
                         children: [
-                          LocationWidget(2 * index),
-                          LocationWidget((2 * index) + 1)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              LocationWidget(2 * index),
+                              LocationWidget((2 * index) + 1)
+                            ],
+                          ),
+                          (index == 1)
+                              ? SFBannerAd(AdManager.bannerAdUnitTestId)
+                              : (index == 5)
+                                  ? SFBannerAd(AdManager.bannerAdUnitTestId)
+                                  : SizedBox()
                         ],
                       );
                     },
