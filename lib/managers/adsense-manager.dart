@@ -3,12 +3,12 @@ import 'dart:html';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
-Widget adsenseAdsView() {
+Widget adsenseAdsView(double screenWidth) {
   // ignore: undefined_prefixed_name
   ui.platformViewRegistry.registerViewFactory(
       'adViewType',
       (int viewID) => IFrameElement()
-        ..width = '320'
+        ..width = screenWidth.toString()
         ..height = '100'
         ..src = 'adview.html'
         ..style.border = 'none');

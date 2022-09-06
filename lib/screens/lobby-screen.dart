@@ -139,7 +139,7 @@ class LobbyScreen extends StatelessWidget {
             // ),
             Container(
               margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
-              height: screenHeight * 0.6,
+              height: screenHeight * 0.5,
               width: screenWidth * 0.6,
               color: Colors.white,
               child: StreamBuilder(
@@ -226,7 +226,7 @@ class LobbyScreen extends StatelessWidget {
               height: screenHeight * 0.01,
             ),
             // SFBannerAd(AdManager.bannerAdUnitTestId)
-            // adsenseAdsView()
+            // adsenseAdsView(screenWidth)
           ]),
         ),
       ),
