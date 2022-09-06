@@ -147,11 +147,11 @@ class _GameScreenState extends State<GameScreen> {
                               LocationWidget((2 * index) + 1)
                             ],
                           ),
-                          (index == 1)
-                              ? SFBannerAd(AdManager.bannerAdUnitTestId)
-                              : (index == 5)
-                                  ? SFBannerAd(AdManager.bannerAdUnitTestId)
-                                  : SizedBox()
+                          // (index == 1)
+                          //     ? SFBannerAd(AdManager.bannerAdUnitTestId)
+                          //     : (index == 5)
+                          //         ? SFBannerAd(AdManager.bannerAdUnitTestId)
+                          //         : SizedBox()
                         ],
                       );
                     },
@@ -196,19 +196,21 @@ class LocationWidget extends StatelessWidget {
             .read<LocationProvider>()
             .toggleSelection(locationImages.keys.elementAt(index));
       },
-      child: Stack(
-        children: [
-          LocationImage(locationImages.keys.elementAt(index)),
-          locationImages.values.elementAt(index)
-              ? Container(
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(149, 255, 29, 29),
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
-                  height: screenHeight * 0.14,
-                  width: screenWidth * 0.4,
-                )
-              : SizedBox(),
-        ],
+      child: IntrinsicHeight(
+        child: Stack(
+          children: [
+            LocationImage(locationImages.keys.elementAt(index)),
+            locationImages.values.elementAt(index)
+                ? Container(
+                    decoration: const BoxDecoration(
+                        color: Color.fromARGB(149, 255, 29, 29),
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    // height: screenHeight * 0.14,
+                    width: screenWidth * 0.4,
+                  )
+                : SizedBox(),
+          ],
+        ),
       ),
     );
   }
