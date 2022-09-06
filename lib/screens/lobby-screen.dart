@@ -55,28 +55,6 @@ class LobbyScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () {
         navigateHome(context);
-        // if (isAdmin!) {
-        //   showDialog(
-        //       context: context,
-        //       builder: (BuildContext buildContext) {
-        //         return ExitAlert(roomId!, 0);
-        //       });
-        // } else {
-        //   context.read<RoomProvider>().memeberLeave(roomId!, userName!);
-        //   Navigator.popUntil(context, ModalRoute.withName('/'));
-        // }
-        // isAdmin!
-        //     ? showDialog(
-        //         context: context,
-        //         builder: (BuildContext buildContext) {
-        //           return ExitAlert(roomId!, 0);
-        //         })
-        //     :
-        //     // print("--------------");
-        //     context.read<RoomProvider>().memeberLeave(roomId!, userName!);
-        // Navigator.popUntil(context, ModalRoute.withName('/'));
-        // Navigator.pop(context);
-
         return Future.value(false);
       },
       child: Scaffold(
@@ -151,28 +129,6 @@ class LobbyScreen extends StatelessWidget {
                       TimerDropDown((index) {
                         countDownTime = timers[index];
                       })
-                      // DropdownButton(
-                      //   underline: SizedBox(),
-                      //   value: selectedTime,
-                      //   icon: const Icon(
-                      //     Icons.keyboard_arrow_down,
-                      //     size: 16,
-                      //   ),
-                      //   items: timers.map((items) {
-                      //     return DropdownMenuItem(
-                      //       value: items,
-                      //       child: Text(
-                      //         items,
-                      //         style: TextStyle(fontSize: 13),
-                      //       ),
-                      //     );
-                      //   }).toList(),
-                      //   onChanged: (newValue) {
-                      //     // setState(() {
-                      //     //   selectedQuantity = newValue.toString();
-                      //     // });
-                      //   },
-                      // )
                     ],
                   )
                 : SizedBox(),
@@ -267,7 +223,7 @@ class LobbyScreen extends StatelessWidget {
             SizedBox(
               height: screenHeight * 0.01,
             ),
-            SFBannerAd(AdManager.bannerAdUnitTestId)
+            // SFBannerAd(AdManager.bannerAdUnitTestId)
           ]),
         ),
       ),
@@ -324,7 +280,7 @@ class LobbyScreen extends StatelessWidget {
       roomDetails = RoomModel.fromJson(data);
       final players = roomDetails.players as Map<dynamic, dynamic>;
       final playersShuffled = players.keys.toList()..shuffle();
-      final randInt = Random().nextInt(playersShuffled.length);
+      final randInt = Random().nextInt(playersShuffled.length - 1);
       final spyPlayer = playersShuffled.elementAt(randInt);
       // databaseRef.child('players').child(players[spyPlayer]).set('spy');
 
@@ -406,8 +362,8 @@ class LobbyScreen extends StatelessWidget {
   Future<void> share() async {
     await FlutterShare.share(
         title: 'Example share',
-        text: 'Join Spyfall ',
-        linkUrl: 'https://flutter.dev/',
+        text: 'Join Spyfall lobby using code "$roomId"',
+        // linkUrl: 'https://flutter.dev/',
         chooserTitle: 'Example Chooser Title');
   }
 

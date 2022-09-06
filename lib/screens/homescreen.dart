@@ -104,8 +104,8 @@ class HomeScreen extends StatelessWidget {
                     context: context,
                     builder: (BuildContext buildContext) {
                       return userName!.isEmpty
-                          ? AlertScreen(
-                              'Enter Name', 'Join', true, AlertType.name, '')
+                          ? AlertScreen('Enter Name', 'Enter Name', true,
+                              AlertType.name, '')
                           : AlertScreen('Room ID', 'Join Room', true,
                               AlertType.join, userName!);
                     });
@@ -186,7 +186,7 @@ class HomeScreen extends StatelessWidget {
     await FlutterShare.share(
         title: 'Example share',
         text:
-            'Hey there \nPlay SPYFALL either using our android app\nhttps://play.google.com/store/apps/details?id=com.inceptra.haiku\nor using our webapp https://spyfall-e9282.web.app/ and play together',
+            'Hello there \nPlay SPYFALL using our android app\nhttps://play.google.com/store/apps/details?id=com.inceptra.spyfall\nor using our webapp https://spyfall-e9282.web.app/ and play together',
         // linkUrl: 'https://flutter.dev/',
         chooserTitle: 'Example Chooser Title');
   }

@@ -38,7 +38,8 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (_) => LocationProvider()),
       ChangeNotifierProvider(create: (_) => UserProvider()),
-      ChangeNotifierProvider(create: (_) => RoomProvider())
+      ChangeNotifierProvider(create: (_) => RoomProvider()),
+      ChangeNotifierProvider(create: (_) => LocationImageProvider()),
     ],
     child: MyApp(),
   ));

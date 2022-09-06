@@ -166,8 +166,9 @@ class AlertMessage extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 249, 249, 249),
         content: Container(
           width: screenWidth * 0.6,
-          height: screenHeight * 0.25,
+          // height: screenHeight * 0.25,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
                 "Time's Up",

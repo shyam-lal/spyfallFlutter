@@ -30,13 +30,14 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  var first = false;
   int? countdownTime;
   String? location, role, roomId;
   var isAdmin;
   @override
   Widget build(BuildContext context) {
     print("===========================");
-    print('=================${ModalRoute.of(context)?.settings.name}');
+    print('=================Game Screen');
     //Routes
     final routes =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
@@ -45,6 +46,11 @@ class _GameScreenState extends State<GameScreen> {
     role = routes['role'].toString();
     roomId = routes['id'].toString();
     //
+
+    if (!first) {
+      first = true;
+      listenForEnding(context);
+    }
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -119,10 +125,13 @@ class _GameScreenState extends State<GameScreen> {
                 SFSpace(0.02, 0),
                 Text('Your are the ${role}'),
                 SFSpace(0.02, 0),
-                SFButton('Restart Round', screenHeight * 0.05, screenWidth * .3,
-                    () {
-                  restartRound(context);
-                }),
+                isAdmin
+                    ? SFButton(
+                        'Restart Round', screenHeight * 0.05, screenWidth * .3,
+                        () {
+                        restartRound(context);
+                      })
+                    : SizedBox(),
                 SFSpace(0.05, 0),
                 const Text(
                   "Locations: ",
@@ -179,6 +188,29 @@ class _GameScreenState extends State<GameScreen> {
     // Navigator.pop(context);
     // Navigator.popUntil(context, ModalRoute.withName('/lobby'));
   }
+
+  void listenForEnding(BuildContext context) {
+    final databaseRef = FirebaseDatabase.instance.ref();
+    final sub = databaseRef
+        .child(FirebaseKeys.rooms)
+        .child(roomId!)
+        .child('isplaying')
+        .onValue
+        .listen((event) {
+      final value = event.snapshot.value as bool;
+      if (!value) {
+        Navigator.popUntil(context, ModalRoute.withName('/lobby'));
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // listenForEnding(context);
+    context.read<LocationImageProvider>().resetImage();
+  }
 }
 
 class LocationWidget extends StatelessWidget {
@@ -189,11 +221,12 @@ class LocationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final locationImages = context.watch<LocationProvider>().locationImages;
+    final locationImages =
+        context.watch<LocationImageProvider>().locationImages;
     return GestureDetector(
       onTap: () {
         context
-            .read<LocationProvider>()
+            .read<LocationImageProvider>()
             .toggleSelection(locationImages.keys.elementAt(index));
       },
       child: IntrinsicHeight(
