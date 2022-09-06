@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.spyfall">
+    package="com.inceptra.spyfall">
    <application
         android:label="spyfall"
         android:name="${applicationName}"
