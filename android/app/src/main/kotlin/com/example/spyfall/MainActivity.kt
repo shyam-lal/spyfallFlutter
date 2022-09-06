@@ -1,4 +1,4 @@
-package com.example.spyfall
+package com.inceptra.spyfall
 
 import io.flutter.embedding.android.FlutterActivity
 
