@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
+import 'package:spyfall/custom_widgets/loading-alert.dart';
 import 'package:spyfall/custom_widgets/sf_widgets.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
@@ -99,6 +100,16 @@ class AlertScreen extends StatelessWidget {
   }
 
   joinRoomTapped(BuildContext context, String name) {
+    showDialog(
+        // barrierDismissible: false,
+        context: context,
+        builder: (BuildContext buildContext) {
+          return WillPopScope(
+              onWillPop: () => Future.value(false),
+              child: LoadingAlert("Creating World.........."));
+          //
+          //
+        });
     print('111111111111111111111join taped111111111111111');
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
     final roomId = roomIdController.text;
