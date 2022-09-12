@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,9 @@ import 'package:spyfall/custom_widgets/loading-alert.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
+import 'dart:io';
+
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatelessWidget {
   List locations = [];
@@ -44,6 +48,22 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(onPressed: share, icon: Icon(Icons.share)),
+                kIsWeb
+                    ? IconButton(
+                        onPressed: () {
+                          openURL(
+                              'https://play.google.com/store/apps/details?id=com.inceptra.spyfall');
+                        },
+                        icon: Image.asset('assets/images/playstore.png'))
+                    : IconButton(
+                        onPressed: () {
+                          openURL('https://spyfall-e9282.web.app/');
+                        },
+                        icon: Image.asset('assets/images/globe.png')),
+                // ElevatedButton(
+                //     onPressed: () {},
+                //     child: Image.asset('assets/images/playstore.png'))
+
                 // IconButton(
                 //     onPressed: null, icon: Icon(Icons.help_outline_sharp))
               ],
@@ -189,6 +209,11 @@ class HomeScreen extends StatelessWidget {
             'Hello there \nPlay SPYFALL using our android app\nhttps://play.google.com/store/apps/details?id=com.inceptra.spyfall\nor using our webapp https://spyfall-e9282.web.app/ and play together',
         // linkUrl: 'https://flutter.dev/',
         chooserTitle: 'Example Chooser Title');
+  }
+
+  Future<void> openURL(String _url) async {
+    await launch(_url,
+        forceSafariVC: true, forceWebView: true, enableJavaScript: true);
   }
 }
 

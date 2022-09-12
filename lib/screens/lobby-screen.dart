@@ -15,6 +15,7 @@ import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/locations_provider.dart';
 import 'package:spyfall/providers/room_provider.dart';
 import 'package:spyfall/screens/game_screen.dart';
+import 'package:spyfall/utitlities/popup-messages.dart';
 
 class LobbyScreen extends StatelessWidget {
   var currentLocation, playerRole;
@@ -275,48 +276,57 @@ class LobbyScreen extends StatelessWidget {
 
     final roles = locations[location];
 
-    databaseRef.once().then((DatabaseEvent event) {
-      final data = event.snapshot.value as Map<dynamic, dynamic>;
-      roomDetails = RoomModel.fromJson(data);
-      final players = roomDetails.players as Map<dynamic, dynamic>;
-      final playersShuffled = players.keys.toList()..shuffle();
-      final randInt = Random().nextInt(playersShuffled.length - 1);
-      final spyPlayer = playersShuffled.elementAt(randInt);
-      // databaseRef.child('players').child(players[spyPlayer]).set('spy');
+    try {
+      await databaseRef.once().then((DatabaseEvent event) {
+        final data = event.snapshot.value as Map<dynamic, dynamic>;
+        roomDetails = RoomModel.fromJson(data);
+        final players = roomDetails.players as Map<dynamic, dynamic>;
+        final playersShuffled = players.keys.toList()..shuffle();
+        final randInt = Random().nextInt(playersShuffled.length - 1);
+        final spyPlayer = playersShuffled.elementAt(randInt);
+        // databaseRef.child('players').child(players[spyPlayer]).set('spy');
 
-      final uploadData = {};
+        final uploadData = {};
 
-      for (var i = 0; i < playersShuffled.length; i++) {
-        uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
-      }
-
-      // for (var i = 0; i < playersShuffled.length; i++) {
-      databaseRef
-          .child('players')
-          // .set({playersShuffled.elementAt(i): roles.elementAt(i)});
-          .set(uploadData);
-      // }
-
-      databaseRef.child('players').child(spyPlayer).set('spy').whenComplete(() {
-        if (userName == spyPlayer) {
-          playerRole = "spy";
-        } else {
-          playerRole = uploadData[userName];
+        for (var i = 0; i < playersShuffled.length; i++) {
+          uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
         }
 
-        databaseRef.child('isplaying').set(true);
+        // for (var i = 0; i < playersShuffled.length; i++) {
+        databaseRef
+            .child('players')
+            // .set({playersShuffled.elementAt(i): roles.elementAt(i)});
+            .set(uploadData);
+        // }
 
-        // Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => GameScreen(
-        //         currentLocation, playerRole, countDownTime, roomId!)));
-        Navigator.pushNamed(context, '/gameScreen', arguments: {
-          'location': currentLocation,
-          'role': playerRole,
-          'time': countDownTime,
-          'id': roomId
+        databaseRef
+            .child('players')
+            .child(spyPlayer)
+            .set('spy')
+            .whenComplete(() {
+          if (userName == spyPlayer) {
+            playerRole = "spy";
+          } else {
+            playerRole = uploadData[userName];
+          }
+
+          databaseRef.child('isplaying').set(true);
+
+          // Navigator.of(context).push(MaterialPageRoute(
+          //     builder: (context) => GameScreen(
+          //         currentLocation, playerRole, countDownTime, roomId!)));
+          Navigator.pushNamed(context, '/gameScreen', arguments: {
+            'location': currentLocation,
+            'role': playerRole,
+            'time': countDownTime,
+            'id': roomId
+          });
         });
       });
-    });
+    } catch (e) {
+      Navigator.pop(context);
+      Messages.displayMessage(context, 'Need more than one player');
+    }
   }
 
   void listenForStarting(BuildContext context) {

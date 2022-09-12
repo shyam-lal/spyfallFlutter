@@ -121,9 +121,46 @@ class _GameScreenState extends State<GameScreen> {
                       }),
                 ),
                 SFSpace(0.02, 0),
-                Text("The location is ${location}"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      (role == 'spy')
+                          ? 'Find out the location without revealing yourself'
+                          : "The location is ",
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                    ),
+                    (role != 'spy')
+                        ? Text(
+                            location.toString(),
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blue[900]),
+                          )
+                        : SizedBox()
+                  ],
+                ),
                 SFSpace(0.02, 0),
-                Text('Your are the ${role}'),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'You are the ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    ),
+                    Text(
+                      role.toString().toUpperCase(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 19,
+                          color: Colors.blue[900]),
+                    )
+                  ],
+                ),
                 SFSpace(0.02, 0),
                 isAdmin
                     ? SFButton(
