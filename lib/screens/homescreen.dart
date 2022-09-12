@@ -7,10 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
+import 'package:spyfall/custom_widgets/ad-widgets.dart';
 import 'package:spyfall/custom_widgets/alert.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/loading-alert.dart';
 import 'package:spyfall/custom_widgets/update_alert.dart';
+import 'package:spyfall/managers/g_ads_manager.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
@@ -46,8 +48,6 @@ class HomeScreen extends StatelessWidget {
         width: screenWidth,
         // height: screenHeight,
         child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
               height: screenHeight * 0.01,
@@ -68,17 +68,8 @@ class HomeScreen extends StatelessWidget {
                           openURL('https://spyfall-e9282.web.app/');
                         },
                         icon: Image.asset('assets/images/globe.png')),
-                // ElevatedButton(
-                //     onPressed: () {},
-                //     child: Image.asset('assets/images/playstore.png'))
-
-                // IconButton(
-                //     onPressed: null, icon: Icon(Icons.help_outline_sharp))
               ],
             ),
-            // SizedBox(
-            //   height: screenHeight * 0.025,
-            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -155,7 +146,11 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
+            SizedBox(
+              height: screenHeight * 0.16,
+            ),
+            SFBannerAd(AdManager.bannerAdUnitTestId)
           ],
         ),
       ),
