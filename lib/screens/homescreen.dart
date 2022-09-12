@@ -39,7 +39,10 @@ class HomeScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     userName = context.watch<UserProvider>().userName;
     versionCode = context.watch<UserProvider>().versionCode;
-    checkForUpdates(context, versionCode!);
+    if (!kIsWeb) {
+      checkForUpdates(context, versionCode!);
+    }
+
     // final nameController = new TextEditingController();
     // nameController.text = userName!;
 
