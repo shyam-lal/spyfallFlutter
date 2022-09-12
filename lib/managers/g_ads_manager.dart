@@ -39,6 +39,16 @@ class AdManager {
   //
   ///////Release ads
 
+  static String get homeScreenBannerAd {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-1929718553234881/6044435801';
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-3940256099942544/2934735716';
+    } else {
+      throw new UnsupportedError('Unsupported platform');
+    }
+  }
+
   static String get lobbyBannerAd {
     if (Platform.isAndroid) {
       return 'ca-app-pub-1929718553234881/7448667765';
