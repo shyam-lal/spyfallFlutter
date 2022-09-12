@@ -29,8 +29,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  url_launcher:
-    ^6.0.5
+  url_launcher: ^6.0.5
+  package_info_plus:
+    ^1.4.3
     #Firebase
   firebase_core: ^1.19.1
   firebase_database: ^9.0.18

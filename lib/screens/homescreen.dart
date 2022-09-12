@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/alert.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/loading-alert.dart';
+import 'package:spyfall/custom_widgets/update_alert.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
@@ -19,6 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 class HomeScreen extends StatelessWidget {
   List locations = [];
   String? userName;
+  int? versionCode;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +30,14 @@ class HomeScreen extends StatelessWidget {
     if (userName == null) {
       context.read<UserProvider>().getUserName();
     }
+    if (versionCode == 0) {
+      context.read<UserProvider>().fetchVersionCode();
+    }
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     userName = context.watch<UserProvider>().userName;
+    versionCode = context.watch<UserProvider>().versionCode;
+    checkForUpdates(context, versionCode!);
     // final nameController = new TextEditingController();
     // nameController.text = userName!;
 
@@ -214,6 +222,23 @@ class HomeScreen extends StatelessWidget {
   Future<void> openURL(String _url) async {
     await launch(_url,
         forceSafariVC: true, forceWebView: true, enableJavaScript: true);
+  }
+
+  Future checkForUpdates(BuildContext context, int remoteCode) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    // String version = packageInfo.version;
+    String code = packageInfo.buildNumber;
+    if (int.parse(code) < remoteCode) {
+      showDialog(
+          // barrierDismissible: false,
+          context: context,
+          builder: (BuildContext buildContext) {
+            return WillPopScope(
+                onWillPop: () => Future.value(false), child: UpdateAlert());
+            //
+            //
+          });
+    }
   }
 }
 

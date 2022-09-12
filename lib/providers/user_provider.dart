@@ -6,9 +6,11 @@ import 'package:spyfall/constants/strings.dart';
 class UserProvider with ChangeNotifier {
   String _userName = "";
   bool? _isAdmin;
+  int _versionCode = 0;
 
   String get userName => _userName;
   bool get isAdmin => _isAdmin!;
+  int get versionCode => _versionCode;
 
   Future getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -25,5 +27,15 @@ class UserProvider with ChangeNotifier {
 
   setAdminStatus(bool admin) {
     _isAdmin = admin;
+  }
+
+  Future fetchVersionCode() async {
+    final reference =
+        await FirebaseDatabase.instance.ref().child(FirebaseKeys.updates);
+    await reference.child('version').once().then((DatabaseEvent event) {
+      final data = event.snapshot.value as String;
+      _versionCode = int.parse(data.toString());
+    });
+    notifyListeners();
   }
 }
