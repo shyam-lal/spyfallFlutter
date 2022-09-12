@@ -138,6 +138,16 @@ class AlertScreen extends StatelessWidget {
 
 //Create Room
   createRoom(BuildContext context, String name) {
+    showDialog(
+        // barrierDismissible: false,
+        context: context,
+        builder: (BuildContext buildContext) {
+          return WillPopScope(
+              onWillPop: () => Future.value(false),
+              child: LoadingAlert("Creating World.........."));
+          //
+          //
+        });
     context.read<UserProvider>().setUserName(name);
 
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
