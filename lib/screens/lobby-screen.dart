@@ -195,14 +195,14 @@ class LobbyScreen extends StatelessWidget {
                                         const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                     child: Text(players.keys.elementAt(index)),
                                   ),
-                                  isAdmin!
-                                      ? IconButton(
-                                          onPressed: () {
-                                            kickUser(
-                                                players.keys.elementAt(index));
-                                          },
-                                          icon: Icon(Icons.close))
-                                      : SizedBox()
+                                  // isAdmin!
+                                  //     ? IconButton(
+                                  //         onPressed: () {
+                                  //           kickUser(
+                                  //               players.keys.elementAt(index));
+                                  //         },
+                                  //         icon: Icon(Icons.close))
+                                  //     : SizedBox()
                                 ],
                               ),
                             );

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/ad-widgets.dart';
 import 'package:spyfall/custom_widgets/alert.dart';
+import 'package:spyfall/custom_widgets/app_end_alert.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
 import 'package:spyfall/custom_widgets/loading-alert.dart';
 import 'package:spyfall/custom_widgets/update_alert.dart';
@@ -46,124 +47,134 @@ class HomeScreen extends StatelessWidget {
     // final nameController = new TextEditingController();
     // nameController.text = userName!;
 
-    return Scaffold(
-      body: Container(
-        width: screenWidth,
-        // height: screenHeight,
-        child: ListView(
-          children: [
-            SizedBox(
-              height: screenHeight * 0.01,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(onPressed: share, icon: Icon(Icons.share)),
-                kIsWeb
-                    ? IconButton(
-                        onPressed: () {
-                          openURL(
-                              'https://play.google.com/store/apps/details?id=com.inceptra.spyfall');
-                        },
-                        icon: Image.asset('assets/images/playstore.png'))
-                    : IconButton(
-                        onPressed: () {
-                          openURL('https://spyfall-e9282.web.app/');
-                        },
-                        icon: Image.asset('assets/images/globe.png')),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Welcome $userName ",
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-                IconButton(
-                    onPressed: () {
-                      showDialog(
+    return WillPopScope(
+      onWillPop: () async {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AppEndAlert();
+            });
+        return false;
+      },
+      child: Scaffold(
+        body: Container(
+          width: screenWidth,
+          // height: screenHeight,
+          child: ListView(
+            children: [
+              SizedBox(
+                height: screenHeight * 0.01,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(onPressed: share, icon: Icon(Icons.share)),
+                  kIsWeb
+                      ? IconButton(
+                          onPressed: () {
+                            openURL(
+                                'https://play.google.com/store/apps/details?id=com.inceptra.spyfall');
+                          },
+                          icon: Image.asset('assets/images/playstore.png'))
+                      : IconButton(
+                          onPressed: () {
+                            openURL('https://spyfall-e9282.web.app/');
+                          },
+                          icon: Image.asset('assets/images/globe.png')),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Welcome $userName",
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return NameAlert();
+                            });
+                      },
+                      icon: Icon(Icons.edit))
+                ],
+              ),
+              SizedBox(
+                height: screenHeight * 0.15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "SPYFALL",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: screenHeight * 0.1,
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                    screenWidth * 0.1, 0, screenWidth * 0.1, 0),
+                child: SFButton(
+                    "CREATE ROOM", screenHeight * 0.08, screenWidth * .5, () {
+                  context.read<UserProvider>().setAdminStatus(true);
+                  userName!.isEmpty
+                      ? showDialog(
                           context: context,
-                          builder: (BuildContext context) {
-                            return NameAlert();
-                          });
-                    },
-                    icon: Icon(Icons.edit))
-              ],
-            ),
-            SizedBox(
-              height: screenHeight * 0.15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "SPYFALL",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: screenHeight * 0.1,
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                  screenWidth * 0.1, 0, screenWidth * 0.1, 0),
-              child: SFButton(
-                  "CREATE ROOM", screenHeight * 0.08, screenWidth * .5, () {
-                context.read<UserProvider>().setAdminStatus(true);
-                userName!.isEmpty
-                    ? showDialog(
-                        context: context,
-                        builder: (BuildContext buildContext) {
-                          return AlertScreen('Enter Name', 'Create Room', true,
-                              AlertType.name, '');
-                        })
-                    : createRoomTapped(context);
-              }),
-            ),
-            const SizedBox(
-              height: 30.0,
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                  screenWidth * 0.1, 0, screenWidth * 0.1, 0),
-              child: SFButton(
-                  "JOIN ROOM", screenHeight * 0.08, screenWidth * .5, () {
-                context.read<UserProvider>().setAdminStatus(false);
-                showDialog(
-                    context: context,
-                    builder: (BuildContext buildContext) {
-                      return userName!.isEmpty
-                          ? AlertScreen('Enter Name', 'Enter Name', true,
-                              AlertType.name, '')
-                          : AlertScreen('Room ID', 'Join Room', true,
-                              AlertType.join, userName!);
-                    });
-              }),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/rules');
-              },
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0, 25, 0, 0),
-                child: Center(
-                  child: Text(
-                    "How to play",
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.italic),
+                          builder: (BuildContext buildContext) {
+                            return AlertScreen('Enter Name', 'Create Room',
+                                true, AlertType.name, '');
+                          })
+                      : createRoomTapped(context);
+                }),
+              ),
+              const SizedBox(
+                height: 30.0,
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                    screenWidth * 0.1, 0, screenWidth * 0.1, 0),
+                child: SFButton(
+                    "JOIN ROOM", screenHeight * 0.08, screenWidth * .5, () {
+                  context.read<UserProvider>().setAdminStatus(false);
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext buildContext) {
+                        return userName!.isEmpty
+                            ? AlertScreen('Enter Name', 'Enter Name', true,
+                                AlertType.name, '')
+                            : AlertScreen('Room ID', 'Join Room', true,
+                                AlertType.join, userName!);
+                      });
+                }),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/rules');
+                },
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                  child: Center(
+                    child: Text(
+                      "How to play",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.italic),
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: screenHeight * 0.16,
-            ),
-            SFBannerAd(AdManager.bannerAdUnitTestId)
-          ],
+              SizedBox(
+                height: screenHeight * 0.16,
+              ),
+              SFBannerAd(AdManager.bannerAdUnitTestId)
+            ],
+          ),
         ),
       ),
     );
