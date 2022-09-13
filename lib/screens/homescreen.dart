@@ -77,9 +77,18 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Welcome $userName",
+                  "Welcome $userName ",
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                 ),
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return NameAlert();
+                          });
+                    },
+                    icon: Icon(Icons.edit))
               ],
             ),
             SizedBox(
@@ -240,10 +249,59 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+class NameAlert extends StatelessWidget {
+  // const NameAlert({Key? key}) : super(key: key);
+  TextEditingController nameController = new TextEditingController();
 
-// .then((DataSnapshot snapshot) {
-//       final data = snapshot.value as Map<dynamic, dynamic>;
-//       // _notifications =
-//       //     data.values.map((e) => CalendarDataModel.fromJson(e)).toList();
-//       // notifyListeners();
-//     });
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Color.fromARGB(255, 249, 249, 249),
+      content: Container(
+        decoration:
+            BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              // keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              controller: nameController,
+              decoration: InputDecoration(
+                  hintText: "Enter Name",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true),
+            ),
+            //Button
+            Padding(
+              padding: EdgeInsets.only(top: 30),
+              child: ElevatedButton(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.black)))),
+                  onPressed: () {
+                    context
+                        .read<UserProvider>()
+                        .setUserName(nameController.text);
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Change Name",
+                    style: TextStyle(color: Colors.white),
+                  )),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
