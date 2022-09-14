@@ -68,6 +68,14 @@ class LocationImageProvider with ChangeNotifier {
     'supermarket.png': false,
     'theater.png': false,
     'university.png': false,
+    'airplane.png': false,
+    'casino.png': false,
+    'submarine.png': false,
+    'pirate-ship.png': false,
+    'train.png': false,
+    'movie-studio.png': false,
+    'railway-station.png': false,
+    'zoo.png': false,
   };
 
   Map<String, bool> get locationImages => _locationImages;

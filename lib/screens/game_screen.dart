@@ -182,7 +182,7 @@ class _GameScreenState extends State<GameScreen> {
                 ListView.separated(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: 6,
+                    itemCount: 10,
                     itemBuilder: (BuildContext context, int index) {
                       return Column(
                         children: [
