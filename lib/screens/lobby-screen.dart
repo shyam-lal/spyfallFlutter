@@ -76,7 +76,7 @@ class LobbyScreen extends StatelessWidget {
                       onPressed: () {
                         navigateHome(context);
                       },
-                      icon: Icon(Icons.person)),
+                      icon: Icon(Icons.home)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

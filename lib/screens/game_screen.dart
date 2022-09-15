@@ -90,7 +90,7 @@ class _GameScreenState extends State<GameScreen> {
                                 context, ModalRoute.withName('/'));
                             // Navigator.popunti
                           },
-                          icon: Icon(Icons.person)),
+                          icon: Icon(Icons.home)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
