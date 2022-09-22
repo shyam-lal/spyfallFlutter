@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -25,6 +26,7 @@ class LobbyScreen extends StatelessWidget {
   var roomDetails;
   // LobbyScreen(this.roomId, this.isAdmin, this.userName);
   ////
+  var spyCount = "1";
   var countDownTime = 8;
   final timers = [5, 8, 10];
 
@@ -124,12 +126,29 @@ class LobbyScreen extends StatelessWidget {
             // ),
             isAdmin!
                 ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Icon(Icons.timer),
-                      TimerDropDown((index) {
-                        countDownTime = timers[index];
-                      })
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.timer),
+                          TimerDropDown((index) {
+                            countDownTime = timers[index];
+                          })
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Spies: "),
+                          // TimerDropDown((index) {
+                          //   countDownTime = timers[index];
+                          // })
+                          SpyCountDropDown((value) {
+                            spyCount = value;
+                          })
+                        ],
+                      ),
                     ],
                   )
                 : SizedBox(),
@@ -289,40 +308,46 @@ class LobbyScreen extends StatelessWidget {
         final uploadData = {};
 
         if (players.length < 8) {
-          for (var i = 0; i < playersShuffled.length; i++) {
-            uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
-          }
-
-          // for (var i = 0; i < playersShuffled.length; i++) {
-          databaseRef
-              .child('players')
-              // .set({playersShuffled.elementAt(i): roles.elementAt(i)});
-              .set(uploadData);
-          // }
-
-          databaseRef
-              .child('players')
-              .child(spyPlayer)
-              .set('spy')
-              .whenComplete(() {
-            if (userName == spyPlayer) {
-              playerRole = "spy";
-            } else {
-              playerRole = uploadData[userName];
+          if (players.length < 6 && spyCount == "2") {
+            Navigator.pop(context);
+            Messages.displayMessage(
+                context, "You need atleast six players to have 2 spies");
+          } else {
+            for (var i = 0; i < playersShuffled.length; i++) {
+              uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
             }
 
-            databaseRef.child('isplaying').set(true);
+            // for (var i = 0; i < playersShuffled.length; i++) {
+            databaseRef
+                .child('players')
+                // .set({playersShuffled.elementAt(i): roles.elementAt(i)});
+                .set(uploadData);
+            // }
 
-            // Navigator.of(context).push(MaterialPageRoute(
-            //     builder: (context) => GameScreen(
-            //         currentLocation, playerRole, countDownTime, roomId!)));
-            Navigator.pushNamed(context, '/gameScreen', arguments: {
-              'location': currentLocation,
-              'role': playerRole,
-              'time': countDownTime,
-              'id': roomId
+            databaseRef
+                .child('players')
+                .child(spyPlayer)
+                .set('spy')
+                .whenComplete(() {
+              if (userName == spyPlayer) {
+                playerRole = "spy";
+              } else {
+                playerRole = uploadData[userName];
+              }
+
+              databaseRef.child('isplaying').set(true);
+
+              // Navigator.of(context).push(MaterialPageRoute(
+              //     builder: (context) => GameScreen(
+              //         currentLocation, playerRole, countDownTime, roomId!)));
+              Navigator.pushNamed(context, '/gameScreen', arguments: {
+                'location': currentLocation,
+                'role': playerRole,
+                'time': countDownTime,
+                'id': roomId
+              });
             });
-          });
+          }
         } else {
           Messages.displayMessage(context, 'Max number of players are eight.');
         }
@@ -370,6 +395,10 @@ class LobbyScreen extends StatelessWidget {
     });
   }
 
+  ///
+  ///Check spy count
+  void checkSpyCount() {}
+
   ////////
   ////////
   /////////Share code
@@ -399,7 +428,7 @@ class LobbyScreen extends StatelessWidget {
   // }
 }
 
-//Dropdown
+//Timer Dropdown
 class TimerDropDown extends StatefulWidget {
   // const TimerDropDown({Key? key}) : super(key: key);
   final ValueChanged<int> onTimerChanged;
@@ -439,6 +468,51 @@ class _TimerDropDownState extends State<TimerDropDown> {
         widget.onTimerChanged(timers.indexOf(newValue.toString()));
         setState(() {
           selectedTime = newValue.toString();
+        });
+      },
+    );
+  }
+}
+
+// Spy count dropdown
+class SpyCountDropDown extends StatefulWidget {
+  // const SPyCountDropDown({Key? key}) : super(key: key);
+  final ValueChanged<String> onValueChanged;
+  SpyCountDropDown(this.onValueChanged);
+
+  @override
+  State<SpyCountDropDown> createState() => _SpyCountDropDownState();
+}
+
+class _SpyCountDropDownState extends State<SpyCountDropDown> {
+  var selectedCount = "1";
+  var counts = [
+    '1',
+    '2',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      underline: SizedBox(),
+      value: selectedCount,
+      icon: const Icon(
+        Icons.keyboard_arrow_down,
+        size: 16,
+      ),
+      items: counts.map((items) {
+        return DropdownMenuItem(
+          value: items,
+          child: Text(
+            items,
+            style: TextStyle(fontSize: 13),
+          ),
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          selectedCount = newValue.toString();
+          widget.onValueChanged(newValue.toString());
         });
       },
     );
