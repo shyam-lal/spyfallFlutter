@@ -32,6 +32,7 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   var first = false;
   int? countdownTime;
+  List<String>? spies;
   String? location, role, roomId;
   var isAdmin;
   @override
@@ -45,6 +46,7 @@ class _GameScreenState extends State<GameScreen> {
     location = routes['location'].toString();
     role = routes['role'].toString();
     roomId = routes['id'].toString();
+    spies = routes['spies'] as List<String>;
     //
 
     if (!first) {
@@ -52,6 +54,7 @@ class _GameScreenState extends State<GameScreen> {
       listenForEnding(context);
     }
 
+    final userName = context.watch<UserProvider>().userName;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     isAdmin = context.watch<UserProvider>().isAdmin;
@@ -161,6 +164,30 @@ class _GameScreenState extends State<GameScreen> {
                     )
                   ],
                 ),
+                SFSpace(0.02, 0),
+                spies!.length == 2 &&
+                        (spies![0] == userName || spies![1] == userName)
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            spies?.first == userName
+                                ? spies![1].toString().toUpperCase()
+                                : spies!.first.toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 19,
+                                color: Colors.blue[900]),
+                          ),
+                          Text(
+                            ' is also the spy. Work with your agent.',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      )
+                    : SizedBox(),
                 SFSpace(0.02, 0),
                 isAdmin
                     ? SFButton(

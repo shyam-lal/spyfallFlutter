@@ -26,13 +26,14 @@ class LobbyScreen extends StatelessWidget {
   var roomDetails;
   // LobbyScreen(this.roomId, this.isAdmin, this.userName);
   ////
-  var spyCount = "1";
+  var spyCount = "";
   var countDownTime = 8;
   final timers = [5, 8, 10];
 
   @override
   Widget build(BuildContext context) {
     ////From route
+    spyCount = '1';
     final routes =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     roomId = routes['roomId'].toString();
@@ -301,9 +302,8 @@ class LobbyScreen extends StatelessWidget {
         roomDetails = RoomModel.fromJson(data);
         final players = roomDetails.players as Map<dynamic, dynamic>;
         final playersShuffled = players.keys.toList()..shuffle();
-        final randInt = Random().nextInt(playersShuffled.length - 1);
-        final spyPlayer = playersShuffled.elementAt(randInt);
-        // databaseRef.child('players').child(players[spyPlayer]).set('spy');
+
+        // final randInt = Random().nextInt(playersShuffled.length - 1);
 
         final uploadData = {};
 
@@ -313,6 +313,7 @@ class LobbyScreen extends StatelessWidget {
             Messages.displayMessage(
                 context, "You need atleast six players to have 2 spies");
           } else {
+            // Set roles
             for (var i = 0; i < playersShuffled.length; i++) {
               uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
             }
@@ -324,29 +325,88 @@ class LobbyScreen extends StatelessWidget {
                 .set(uploadData);
             // }
 
-            databaseRef
-                .child('players')
-                .child(spyPlayer)
-                .set('spy')
-                .whenComplete(() {
-              if (userName == spyPlayer) {
-                playerRole = "spy";
-              } else {
-                playerRole = uploadData[userName];
-              }
+            //// Random number generator
+            var randomizer = new Random();
+            var randomInts = List.generate(int.parse(spyCount),
+                (index) => randomizer.nextInt(playersShuffled.length - 1));
+            List<String> spyPlayers = [];
 
-              databaseRef.child('isplaying').set(true);
+            // Spy Selection
+            if (spyCount == "2") {
+              spyPlayers.add(playersShuffled.elementAt(randomInts.first));
+              spyPlayers.add(playersShuffled.elementAt(randomInts[1]));
 
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (context) => GameScreen(
-              //         currentLocation, playerRole, countDownTime, roomId!)));
-              Navigator.pushNamed(context, '/gameScreen', arguments: {
-                'location': currentLocation,
-                'role': playerRole,
-                'time': countDownTime,
-                'id': roomId
+              // databaseRef.child("players").child(spyPlayers[1]).set('spy');
+
+              databaseRef
+                  .child('players')
+                  .child(spyPlayers.first)
+                  .set('spy')
+                  .whenComplete(() {
+                databaseRef
+                    .child("players")
+                    .child(spyPlayers[1])
+                    .set('spy')
+                    .whenComplete(() {
+                  if (userName == spyPlayers.first ||
+                      userName == spyPlayers[1]) {
+                    playerRole = "spy";
+                  } else {
+                    playerRole = uploadData[userName];
+                  }
+
+                  databaseRef.child('isplaying').set(true);
+                  Navigator.pushNamed(context, '/gameScreen', arguments: {
+                    'location': currentLocation,
+                    'role': playerRole,
+                    'time': countDownTime,
+                    'id': roomId,
+                    'spies': spyPlayers
+                  });
+                });
+                //
+                // if (userName == spyPlayers.first || userName == spyPlayers[1]) {
+                //   playerRole = "spy";
+                // } else {
+                //   playerRole = uploadData[userName];
+                // }
+
+                // databaseRef.child('isplaying').set(true);
+                // Navigator.pushNamed(context, '/gameScreen', arguments: {
+                //   'location': currentLocation,
+                //   'role': playerRole,
+                //   'time': countDownTime,
+                //   'id': roomId
+                // });
+                //
               });
-            });
+            } else {
+              spyPlayers.add(playersShuffled.elementAt(randomInts.first));
+              //
+              databaseRef
+                  .child('players')
+                  .child(spyPlayers.first)
+                  .set('spy')
+                  .whenComplete(() {
+                if (userName == spyPlayers.first) {
+                  playerRole = "spy";
+                } else {
+                  playerRole = uploadData[userName];
+                }
+
+                databaseRef.child('isplaying').set(true);
+                Navigator.pushNamed(context, '/gameScreen', arguments: {
+                  'location': currentLocation,
+                  'role': playerRole,
+                  'time': countDownTime,
+                  'id': roomId,
+                  'spies': spyPlayers
+                });
+              });
+            }
+            //
+            //
+
           }
         } else {
           Messages.displayMessage(context, 'Max number of players are eight.');
