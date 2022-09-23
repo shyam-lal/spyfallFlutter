@@ -112,7 +112,7 @@ class AlertScreen extends StatelessWidget {
         });
     print('111111111111111111111join taped111111111111111');
     final roomRef = FirebaseDatabase.instance.ref().child(FirebaseKeys.rooms);
-    final roomId = roomIdController.text;
+    final roomId = roomIdController.text.toUpperCase();
 
     roomRef.child(roomId).once().then((DatabaseEvent event) {
       if (event.snapshot.exists) {
