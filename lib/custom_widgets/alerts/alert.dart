@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
-import 'package:spyfall/custom_widgets/loading-alert.dart';
 import 'package:spyfall/custom_widgets/sf_widgets.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/user_provider.dart';
 import 'package:spyfall/screens/lobby-screen.dart';
 import 'package:spyfall/utitlities/popup-messages.dart';
+
+import 'loading-alert.dart';
 
 class AlertScreen extends StatelessWidget {
   // const AlertScreen({Key? key}) : super(key: key);
