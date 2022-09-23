@@ -48,6 +48,7 @@ class LobbyScreen extends StatelessWidget {
     if (!isAdmin!) {
       listenForStarting(context);
     }
+    checkifRoomExists(context);
     locations = context.watch<LocationProvider>().locations;
     // playerName = context.watch<UserProvider>().userName;
 
@@ -456,8 +457,18 @@ class LobbyScreen extends StatelessWidget {
   }
 
   ///
-  ///Check spy count
-  void checkSpyCount() {}
+  ///Check if room exists
+  void checkifRoomExists(BuildContext context) {
+    final databaseRef = FirebaseDatabase.instance.ref();
+    databaseRef
+        .child(FirebaseKeys.rooms)
+        .child(roomId!)
+        .onChildRemoved
+        .listen((event) {
+      print("Room CLosed ++++++++++++++++++");
+      Navigator.popUntil(context, ModalRoute.withName('/'));
+    });
+  }
 
   ////////
   ////////
