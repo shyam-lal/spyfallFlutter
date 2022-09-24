@@ -57,7 +57,7 @@ class AppEndAlert extends StatelessWidget {
                       "Drop a Review", screenHeight * 0.06, screenWidth * 0.35,
                       () async {
                     await launch(
-                        "https://play.google.com/store/apps/details?id=com.inceptra.haiku",
+                        "https://play.google.com/store/apps/details?id=com.inceptra.spyfall",
                         forceSafariVC: true,
                         forceWebView: true,
                         enableJavaScript: true);

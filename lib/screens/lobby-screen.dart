@@ -157,6 +157,7 @@ class LobbyScreen extends StatelessWidget {
             // SizedBox(
             //   height: screenHeight * 0.001,
             // ),
+
             Container(
               margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
               height: screenHeight * 0.6,
@@ -190,43 +191,50 @@ class LobbyScreen extends StatelessWidget {
                             ///////////
                             ///////////
                             //////////////////Player Item
-                            return Container(
-                              height: screenHeight * 0.05,
-                              margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                              // padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(1.0, 1.0),
-                                        spreadRadius: 2.0,
-                                        blurRadius: 2.0)
-                                  ]),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // Icon(Icons.person),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                    child: Text(players.keys.elementAt(index)),
-                                  ),
-                                  // isAdmin!
-                                  //     ? IconButton(
-                                  //         onPressed: () {
-                                  //           kickUser(
-                                  //               players.keys.elementAt(index));
-                                  //         },
-                                  //         icon: Icon(Icons.close))
-                                  //     : SizedBox()
-                                ],
-                              ),
-                            );
+                            return (players.keys.elementAt(index) != userName)
+                                ? Container(
+                                    height: screenHeight * 0.05,
+                                    margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                    // padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                    decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(1.0, 1.0),
+                                              spreadRadius: 2.0,
+                                              blurRadius: 2.0)
+                                        ]),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Icon(Icons.person),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 0, 0, 0),
+                                          child: Text(
+                                              players.keys.elementAt(index)),
+                                        ),
+                                        isAdmin!
+                                            ? IconButton(
+                                                onPressed: () {
+                                                  // if () {
+
+                                                  // }
+                                                  kickUser(players.keys
+                                                      .elementAt(index));
+                                                },
+                                                icon: Icon(Icons.close))
+                                            : SizedBox()
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox();
                           });
                     } else {
                       return Center(child: CircularProgressIndicator());
@@ -363,6 +371,8 @@ class LobbyScreen extends StatelessWidget {
                     'time': countDownTime,
                     'id': roomId,
                     'spies': spyPlayers
+                  }).whenComplete(() {
+                    print("000000000000");
                   });
                 });
                 //
@@ -402,6 +412,8 @@ class LobbyScreen extends StatelessWidget {
                   'time': countDownTime,
                   'id': roomId,
                   'spies': spyPlayers
+                }).whenComplete(() {
+                  print("000000000000");
                 });
               });
             }
@@ -450,6 +462,8 @@ class LobbyScreen extends StatelessWidget {
             'role': playerRole,
             'time': countDownTime,
             'id': roomId
+          }).whenComplete(() {
+            print("000000000000");
           });
         });
       }
@@ -481,6 +495,9 @@ class LobbyScreen extends StatelessWidget {
         chooserTitle: 'Example Chooser Title');
   }
 
+  ////
+  ////
+  ////Kick User
   Future kickUser(String playerName) async {
     final databaseRef = FirebaseDatabase.instance
         .ref()
@@ -489,14 +506,14 @@ class LobbyScreen extends StatelessWidget {
     databaseRef.child('players').child(playerName).remove();
   }
 
-  // Future<bool> onBackTapped(BuildContext context) async {
-  //   showDialog(
-  //           context: context,
-  //           builder: (BuildContext buildContext) {
-  //             return ExitAlert();
-  //           }) ??
-  //            await false;
-  // }
+  ////
+  ///Check players exists
+  Future checkAllPlayers() async {
+    final databaseRef = await FirebaseDatabase.instance
+        .ref()
+        .child(FirebaseKeys.rooms)
+        .child(roomId!);
+  }
 }
 
 //Timer Dropdown
