@@ -11,6 +11,7 @@ import 'package:spyfall/custom_widgets/ad-widgets.dart';
 import 'package:spyfall/custom_widgets/alerts/exit_alert.dart';
 import 'package:spyfall/custom_widgets/alerts/loading-alert.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
+
 import 'package:spyfall/managers/g_ads_manager.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/locations_provider.dart';
@@ -160,7 +161,7 @@ class LobbyScreen extends StatelessWidget {
 
             Container(
               margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
-              height: screenHeight * 0.6,
+              height: screenHeight * 0.5,
               width: screenWidth * 0.6,
               color: Colors.white,
               child: StreamBuilder(
@@ -253,7 +254,8 @@ class LobbyScreen extends StatelessWidget {
             SizedBox(
               height: screenHeight * 0.01,
             ),
-            SFBannerAd(AdManager.bannerAdUnitTestId)
+            // SFBannerAd(AdManager.bannerAdUnitTestId)
+            // adsenseAdsView(screenWidth)
           ]),
         ),
       ),
@@ -461,7 +463,8 @@ class LobbyScreen extends StatelessWidget {
             'location': currentLocation,
             'role': playerRole,
             'time': countDownTime,
-            'id': roomId
+            'id': roomId,
+            'spies': ['']
           }).whenComplete(() {
             print("000000000000");
           });
