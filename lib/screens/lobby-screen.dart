@@ -434,6 +434,7 @@ class LobbyScreen extends StatelessWidget {
   }
 
   void listenForStarting(BuildContext context) {
+    final spies = [];
     final databaseRef = FirebaseDatabase.instance.ref();
     final sub = databaseRef
         .child(FirebaseKeys.rooms)
@@ -455,6 +456,15 @@ class LobbyScreen extends StatelessWidget {
           countDownTime = roomDetails.time;
           var players = roomDetails.players as Map<dynamic, dynamic>;
           playerRole = players[userName];
+          if (playerRole == 'spy') {
+            // spies.add(userName);
+            for (var key in players.keys) {
+              if (players[key] == 'spy') {
+                spies.add(key);
+                // spies.add(players.entries.firstWhere((element) => element));
+              }
+            }
+          }
         }).then((value) {
           // Navigator.of(context).push(MaterialPageRoute(
           //     builder: (context) => GameScreen(
@@ -464,7 +474,7 @@ class LobbyScreen extends StatelessWidget {
             'role': playerRole,
             'time': countDownTime,
             'id': roomId,
-            'spies': ['']
+            'spies': spies.isEmpty ? [''] : spies
           }).whenComplete(() {
             print("000000000000");
           });
