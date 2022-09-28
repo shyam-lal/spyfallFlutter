@@ -311,7 +311,8 @@ class LobbyScreen extends StatelessWidget {
         final data = event.snapshot.value as Map<dynamic, dynamic>;
         roomDetails = RoomModel.fromJson(data);
         final players = roomDetails.players as Map<dynamic, dynamic>;
-        final playersShuffled = players.keys.toList()..shuffle();
+        // final playersShuffled = players.keys.toList()..shuffle();
+        final playersShuffled = players.keys.toList();
 
         // final randInt = Random().nextInt(playersShuffled.length - 1);
 
@@ -336,12 +337,19 @@ class LobbyScreen extends StatelessWidget {
             // }
 
             //// Random number generator
-            var randomizer = new Random();
-            var randomInts = List.generate(int.parse(spyCount),
-                (index) => randomizer.nextInt(playersShuffled.length - 1));
+            // var randomizer = new Random();
+            // var randomInts = List.generate(int.parse(spyCount),
+            //     (index) => randomizer.nextInt(playersShuffled.length));
+            var randomInts = [
+              for (var i = 0; i <= (playersShuffled.length - 1); i++) i
+            ].toList();
+            randomInts.shuffle();
+
+            // randomInts.add(Random().nextInt(playersShuffled.length - 1));
             List<String> spyPlayers = [];
 
             // Spy Selection
+            print("+++++++++++++++++++++$randomInts");
             if (spyCount == "2") {
               spyPlayers.add(playersShuffled.elementAt(randomInts.first));
               spyPlayers.add(playersShuffled.elementAt(randomInts[1]));
