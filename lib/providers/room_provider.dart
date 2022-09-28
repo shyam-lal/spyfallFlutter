@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:spyfall/constants/strings.dart';
 
 class RoomProvider with ChangeNotifier {
+  Map<dynamic, dynamic> _players = {};
+  Map<dynamic, dynamic> get players => _players;
   // String _userName = "";
   // bool? _isAdmin;
 
@@ -42,5 +44,23 @@ class RoomProvider with ChangeNotifier {
         .child('players')
         .child(name);
     databaseRef.remove();
+  }
+
+  fetchPlayerList(String? roomId) {
+    FirebaseDatabase.instance
+        .ref()
+        .child(FirebaseKeys.rooms)
+        .child(roomId!)
+        .child('players')
+        .once()
+        .then((DatabaseEvent event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>;
+      _players = data;
+      notifyListeners();
+    });
+  }
+
+  resetPlayers() {
+    _players = {};
   }
 }

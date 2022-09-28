@@ -32,13 +32,14 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   var first = false;
   int? countdownTime;
-  List<String>? spies;
+  // List<String>? spies;
   String? location, role, roomId;
   var isAdmin;
   @override
   Widget build(BuildContext context) {
     print("===========================");
     print('=================Game Screen');
+    var spies = [];
     //Routes
     final routes =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
@@ -46,17 +47,30 @@ class _GameScreenState extends State<GameScreen> {
     location = routes['location'].toString();
     role = routes['role'].toString();
     roomId = routes['id'].toString();
-    spies = routes['spies'] as List<String>;
+    // spies = routes['spies'] as List<String>;
     //
 
     if (!first) {
       first = true;
+      context.read<RoomProvider>().resetPlayers();
       listenForEnding(context);
     }
 
     final userName = context.watch<UserProvider>().userName;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final playerList = context.watch<RoomProvider>().players;
+    if (playerList.isEmpty) {
+      context.read<RoomProvider>().fetchPlayerList(roomId);
+    }
+    print(playerList);
+    if (playerList.isNotEmpty && playerList[userName] == 'spy') {
+      for (var key in playerList.keys) {
+        if (playerList[key] == 'spy') {
+          spies.add(key);
+        }
+      }
+    }
     isAdmin = context.watch<UserProvider>().isAdmin;
     return WillPopScope(
       onWillPop: () {
@@ -165,16 +179,16 @@ class _GameScreenState extends State<GameScreen> {
                   ],
                 ),
                 SFSpace(0.02, 0),
-                spies!.length == 2 &&
-                        (spies![0] == userName || spies![1] == userName)
+                spies.length == 2
+                    // && (spies![0] == userName || spies![1] == userName)
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            spies?.first == userName
-                                ? spies![1].toString().toUpperCase()
-                                : spies!.first.toString(),
+                            spies.first == userName
+                                ? spies[1].toString().toUpperCase()
+                                : spies.first.toString(),
                             style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 19,

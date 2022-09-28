@@ -4,7 +4,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/ad-widgets.dart';
@@ -377,21 +376,6 @@ class LobbyScreen extends StatelessWidget {
                     print("000000000000");
                   });
                 });
-                //
-                // if (userName == spyPlayers.first || userName == spyPlayers[1]) {
-                //   playerRole = "spy";
-                // } else {
-                //   playerRole = uploadData[userName];
-                // }
-
-                // databaseRef.child('isplaying').set(true);
-                // Navigator.pushNamed(context, '/gameScreen', arguments: {
-                //   'location': currentLocation,
-                //   'role': playerRole,
-                //   'time': countDownTime,
-                //   'id': roomId
-                // });
-                //
               });
             } else {
               spyPlayers.add(playersShuffled.elementAt(randomInts.first));
@@ -434,7 +418,7 @@ class LobbyScreen extends StatelessWidget {
   }
 
   void listenForStarting(BuildContext context) {
-    final spies = [];
+    List<String> spies = [];
     final databaseRef = FirebaseDatabase.instance.ref();
     final sub = databaseRef
         .child(FirebaseKeys.rooms)

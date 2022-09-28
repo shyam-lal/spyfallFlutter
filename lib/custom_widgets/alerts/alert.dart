@@ -28,11 +28,14 @@ class AlertScreen extends StatelessWidget {
     if (!name.isEmpty) {
       // context.read<UserProvider>().setUserName(name);
     }
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     isAdmin = context.watch<UserProvider>().isAdmin;
     // userName = context.watch<UserProvider>().userName;
     return AlertDialog(
       backgroundColor: Color.fromARGB(255, 249, 249, 249),
       content: Container(
+        width: screenWidth * 0.5,
         decoration:
             BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Column(

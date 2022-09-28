@@ -6,24 +6,6 @@ class LocationProvider with ChangeNotifier {
   Map<dynamic, dynamic> _locations = {};
   Map<dynamic, dynamic> get locations => _locations;
 
-  // Map<String, bool> _locationImages = {
-  //   // 'bank.png': false,
-  //   'beach.png': false,
-  //   'circus.png': false,
-  //   'hotel.png': false,
-  //   'restaurant.png': false,
-  //   'school.png': false,
-  //   'hospital.png': false,
-  //   'military-base.png': false,
-  //   'police-station.png': false,
-  //   'space-station.png': false,
-  //   'supermarket.png': false,
-  //   'theater.png': false,
-  //   'university.png': false,
-  // };
-
-  // Map<String, bool> get locationImages => _locationImages;
-
   // Fetch notifications
   Future getLocations() async {
     print(
@@ -39,18 +21,6 @@ class LocationProvider with ChangeNotifier {
       notifyListeners();
     });
   }
-
-  // toggleSelection(String key) {
-  //   _locationImages[key] = !_locationImages[key]!;
-  //   notifyListeners();
-  // }
-
-  // resetImage() {
-  //   _locationImages.keys.map((e) {
-  //     _locationImages[e] = false;
-  //   }).toList();
-  //   notifyListeners();
-  // }
 }
 
 class LocationImageProvider with ChangeNotifier {
