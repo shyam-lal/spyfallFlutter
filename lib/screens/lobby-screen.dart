@@ -318,7 +318,7 @@ class LobbyScreen extends StatelessWidget {
 
         final uploadData = {};
 
-        if (players.length < 8) {
+        if (players.length <= 12) {
           if (players.length < 6 && spyCount == "2") {
             Navigator.pop(context);
             Messages.displayMessage(
@@ -326,7 +326,12 @@ class LobbyScreen extends StatelessWidget {
           } else {
             // Set roles
             for (var i = 0; i < playersShuffled.length; i++) {
-              uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
+              if (roles.length > i) {
+                uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
+              } else {
+                uploadData[playersShuffled.elementAt(i)] =
+                    roles.elementAt(i ~/ 2);
+              }
             }
 
             // for (var i = 0; i < playersShuffled.length; i++) {
