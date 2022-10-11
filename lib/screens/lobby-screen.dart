@@ -4,13 +4,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:spyfall/constants/strings.dart';
 import 'package:spyfall/custom_widgets/ad-widgets.dart';
 import 'package:spyfall/custom_widgets/alerts/exit_alert.dart';
 import 'package:spyfall/custom_widgets/alerts/loading-alert.dart';
 import 'package:spyfall/custom_widgets/custombutton.dart';
+
 import 'package:spyfall/managers/g_ads_manager.dart';
 import 'package:spyfall/models/room_model.dart';
 import 'package:spyfall/providers/locations_provider.dart';
@@ -157,10 +157,11 @@ class LobbyScreen extends StatelessWidget {
             // SizedBox(
             //   height: screenHeight * 0.001,
             // ),
+            Text(userName.toString()),
 
             Container(
-              margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
-              height: screenHeight * 0.6,
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 5),
+              height: screenHeight * 0.5,
               width: screenWidth * 0.6,
               color: Colors.white,
               child: StreamBuilder(
@@ -310,13 +311,14 @@ class LobbyScreen extends StatelessWidget {
         final data = event.snapshot.value as Map<dynamic, dynamic>;
         roomDetails = RoomModel.fromJson(data);
         final players = roomDetails.players as Map<dynamic, dynamic>;
-        final playersShuffled = players.keys.toList()..shuffle();
+        // final playersShuffled = players.keys.toList()..shuffle();
+        final playersShuffled = players.keys.toList();
 
         // final randInt = Random().nextInt(playersShuffled.length - 1);
 
         final uploadData = {};
 
-        if (players.length < 8) {
+        if (players.length <= 12) {
           if (players.length < 6 && spyCount == "2") {
             Navigator.pop(context);
             Messages.displayMessage(
@@ -324,7 +326,12 @@ class LobbyScreen extends StatelessWidget {
           } else {
             // Set roles
             for (var i = 0; i < playersShuffled.length; i++) {
-              uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
+              if (roles.length > i) {
+                uploadData[playersShuffled.elementAt(i)] = roles.elementAt(i);
+              } else {
+                uploadData[playersShuffled.elementAt(i)] =
+                    roles.elementAt(i ~/ 2);
+              }
             }
 
             // for (var i = 0; i < playersShuffled.length; i++) {
@@ -335,12 +342,19 @@ class LobbyScreen extends StatelessWidget {
             // }
 
             //// Random number generator
-            var randomizer = new Random();
-            var randomInts = List.generate(int.parse(spyCount),
-                (index) => randomizer.nextInt(playersShuffled.length - 1));
+            // var randomizer = new Random();
+            // var randomInts = List.generate(int.parse(spyCount),
+            //     (index) => randomizer.nextInt(playersShuffled.length));
+            var randomInts = [
+              for (var i = 0; i <= (playersShuffled.length - 1); i++) i
+            ].toList();
+            randomInts.shuffle();
+
+            // randomInts.add(Random().nextInt(playersShuffled.length - 1));
             List<String> spyPlayers = [];
 
             // Spy Selection
+            print("+++++++++++++++++++++$randomInts");
             if (spyCount == "2") {
               spyPlayers.add(playersShuffled.elementAt(randomInts.first));
               spyPlayers.add(playersShuffled.elementAt(randomInts[1]));
@@ -375,21 +389,6 @@ class LobbyScreen extends StatelessWidget {
                     print("000000000000");
                   });
                 });
-                //
-                // if (userName == spyPlayers.first || userName == spyPlayers[1]) {
-                //   playerRole = "spy";
-                // } else {
-                //   playerRole = uploadData[userName];
-                // }
-
-                // databaseRef.child('isplaying').set(true);
-                // Navigator.pushNamed(context, '/gameScreen', arguments: {
-                //   'location': currentLocation,
-                //   'role': playerRole,
-                //   'time': countDownTime,
-                //   'id': roomId
-                // });
-                //
               });
             } else {
               spyPlayers.add(playersShuffled.elementAt(randomInts.first));
@@ -432,6 +431,7 @@ class LobbyScreen extends StatelessWidget {
   }
 
   void listenForStarting(BuildContext context) {
+    List<String> spies = [];
     final databaseRef = FirebaseDatabase.instance.ref();
     final sub = databaseRef
         .child(FirebaseKeys.rooms)
@@ -453,6 +453,15 @@ class LobbyScreen extends StatelessWidget {
           countDownTime = roomDetails.time;
           var players = roomDetails.players as Map<dynamic, dynamic>;
           playerRole = players[userName];
+          if (playerRole == 'spy') {
+            // spies.add(userName);
+            for (var key in players.keys) {
+              if (players[key] == 'spy') {
+                spies.add(key);
+                // spies.add(players.entries.firstWhere((element) => element));
+              }
+            }
+          }
         }).then((value) {
           // Navigator.of(context).push(MaterialPageRoute(
           //     builder: (context) => GameScreen(
@@ -461,7 +470,8 @@ class LobbyScreen extends StatelessWidget {
             'location': currentLocation,
             'role': playerRole,
             'time': countDownTime,
-            'id': roomId
+            'id': roomId,
+            'spies': spies.isEmpty ? [''] : spies
           }).whenComplete(() {
             print("000000000000");
           });
