@@ -157,9 +157,10 @@ class LobbyScreen extends StatelessWidget {
             // SizedBox(
             //   height: screenHeight * 0.001,
             // ),
+            Text(userName.toString()),
 
             Container(
-              margin: EdgeInsets.fromLTRB(20, 5, 20, 5),
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 5),
               height: screenHeight * 0.5,
               width: screenWidth * 0.6,
               color: Colors.white,
