@@ -172,7 +172,7 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: screenHeight * 0.16,
               ),
-              SFBannerAd(AdManager.homeScreenBannerAd)
+              SFBannerAd(AdManager.bannerAdUnitTestId)
             ],
           ),
         ),

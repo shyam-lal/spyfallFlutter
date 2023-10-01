@@ -235,9 +235,9 @@ class _GameScreenState extends State<GameScreen> {
                             ],
                           ),
                           (index == 1)
-                              ? SFBannerAd(AdManager.gameScreenBannerAd1)
+                              ? SFBannerAd(AdManager.bannerAdUnitTestId)
                               : (index == 5)
-                                  ? SFBannerAd(AdManager.gameScreenBannerAd2)
+                                  ? SFBannerAd(AdManager.bannerAdUnitTestId)
                                   : SizedBox()
                         ],
                       );

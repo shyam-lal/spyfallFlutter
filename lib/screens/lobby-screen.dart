@@ -254,7 +254,7 @@ class LobbyScreen extends StatelessWidget {
             SizedBox(
               height: screenHeight * 0.01,
             ),
-            SFBannerAd(AdManager.lobbyBannerAd)
+            SFBannerAd(AdManager.bannerAdUnitTestId)
           ]),
         ),
       ),
@@ -418,7 +418,6 @@ class LobbyScreen extends StatelessWidget {
             }
             //
             //
-
           }
         } else {
           Messages.displayMessage(context, 'Max number of players are eight.');
