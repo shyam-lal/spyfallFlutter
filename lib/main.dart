@@ -10,6 +10,7 @@ import 'package:spyfall/screens/homescreen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:spyfall/screens/lobby-screen.dart';
 import 'package:spyfall/screens/rules-screen.dart';
+import 'package:spyfall/screens/test_screen.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         '/lobby': (context) => LobbyScreen(),
         '/gameScreen': (context) => GameScreen(),
         '/rules': (context) => RulesScreen(),
+        '/test': (context) => TestScreen(),
       },
     );
   }

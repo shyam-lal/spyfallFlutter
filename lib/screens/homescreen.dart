@@ -107,9 +107,15 @@ class HomeScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "SPYFALL",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/test');
+                    },
+                    child: Text(
+                      "SPYFALL",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+                    ),
                   ),
                 ],
               ),
